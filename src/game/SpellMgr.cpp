@@ -331,6 +331,7 @@ bool IsPositiveEffect(uint32 spellId, uint32 effIndex)
                         case 38637:                         // Nether Exhaustion (red)
                         case 38638:                         // Nether Exhaustion (green)
                         case 38639:                         // Nether Exhaustion (blue)
+                        case 11196:                         // Recently Bandaged
                             return false;
                         // some spells have unclear target modes for selection, so just make effect positive
                         case 27184:                         
@@ -719,7 +720,7 @@ void SpellMgr::LoadSpellAffects()
 
         bar.step();
 
-        uint16 entry = fields[0].GetUInt16();
+        uint32 entry = fields[0].GetUInt32();
         uint8 effectId = fields[1].GetUInt8();
 
         SpellEntry const* spellInfo = sSpellStore.LookupEntry(entry);
@@ -1038,7 +1039,7 @@ void SpellMgr::LoadSpellElixirs()
 
         bar.step();
 
-        uint16 entry = fields[0].GetUInt16();
+        uint32 entry = fields[0].GetUInt32();
         uint8 mask = fields[1].GetUInt8();
 
         SpellEntry const* spellInfo = sSpellStore.LookupEntry(entry);
@@ -1858,7 +1859,13 @@ void SpellMgr::LoadSpellLearnSpells()
 
         if(!sSpellStore.LookupEntry(node.spell))
         {
-            sLog.outErrorDb("Spell %u listed in `spell_learn_spell` does not exist",node.spell);
+            sLog.outErrorDb("Spell %u listed in `spell_learn_spell` learning not existed spell %u",spell_id,node.spell);
+            continue;
+        }
+
+        if(GetTalentSpellCost(node.spell))
+        {
+            sLog.outErrorDb("Spell %u listed in `spell_learn_spell` attempt learning talent spell %u, skipped",spell_id,node.spell);
             continue;
         }
 
@@ -2086,10 +2093,10 @@ void SpellMgr::LoadSpellPetAuras()
 
         bar.step();
 
-        uint16 spell = fields[0].GetUInt16();
+        uint32 spell = fields[0].GetUInt32();
         uint8 eff = fields[1].GetUInt8();
-        uint16 pet = fields[2].GetUInt16();
-        uint16 aura = fields[3].GetUInt16();
+        uint32 pet = fields[2].GetUInt32();
+        uint32 aura = fields[3].GetUInt32();
 
         SpellPetAuraMap::iterator itr = mSpellPetAuraMap.find((spell<<8) + eff);
         if(itr != mSpellPetAuraMap.end())
@@ -2723,6 +2730,9 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             // Cheap Shot
             else if (spellproto->SpellFamilyFlags & UI64LIT(0x00000000400))
                 return DIMINISHING_CHEAPSHOT_POUNCE;
+            // Crippling poison - Limit to 10 seconds in PvP (No SpellFamilyFlags)
+            else if (spellproto->SpellIconID == 163)
+                return DIMINISHING_LIMITONLY;
             break;
         }
         case SPELLFAMILY_WARLOCK:
@@ -2743,6 +2753,9 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
             // Pounce
             else if (spellproto->SpellFamilyFlags & UI64LIT(0x00000020000))
                 return DIMINISHING_CHEAPSHOT_POUNCE;
+            // Faerie Fire
+            else if (spellproto->SpellFamilyFlags & UI64LIT(0x00000000400))
+                return DIMINISHING_LIMITONLY;
             break;
         }
         case SPELLFAMILY_WARRIOR:
@@ -2780,7 +2793,7 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
     if (mechanic & (1<<MECHANIC_FEAR))      return DIMINISHING_FEAR_BLIND;
     if (mechanic & (1<<MECHANIC_CHARM))     return DIMINISHING_CHARM;
     if (mechanic & (1<<MECHANIC_SILENCE))   return DIMINISHING_SILENCE;
-    if (mechanic & (1<<DIMINISHING_DISARM)) return DIMINISHING_DISARM;
+    if (mechanic & (1<<MECHANIC_DISARM))    return DIMINISHING_DISARM;
     if (mechanic & (1<<MECHANIC_FREEZE))    return DIMINISHING_FREEZE_SLEEP;
     if (mechanic & ((1<<MECHANIC_KNOCKOUT) | (1<<MECHANIC_SAPPED)))    return DIMINISHING_POLYMORPH_GOUGE_SAP;
     if (mechanic & (1<<MECHANIC_BANISH))    return DIMINISHING_BANISH;
@@ -2810,6 +2823,13 @@ int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellEntry cons
             // Repentance - limit to 6 seconds in PvP
             if (spellproto->SpellFamilyFlags & UI64LIT(0x00000000004))
                 return 6000;
+            break;
+        }
+        case SPELLFAMILY_DRUID:
+        {
+            // Faerie Fire - limit to 40 seconds in PvP (3.1)
+            if (spellproto->SpellFamilyFlags & UI64LIT(0x00000000400))
+                return 40000;
             break;
         }
         default:
