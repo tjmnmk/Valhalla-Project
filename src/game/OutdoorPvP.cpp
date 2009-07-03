@@ -318,24 +318,16 @@ bool OutdoorPvPObjective::DelCreature(uint32 type)
     Creature *cr = HashMapHolder<Creature>::Find(m_Creatures[type]);
     if(!cr)
     {
-		sLog.outError("OutdoorPvPObjective: Can't find creature guid: %u",m_Creatures[type]);
+        sLog.outError("OutdoorPvPObjective: Can't find creature guid: %u", m_Creatures[type]);
         return false;
     }
-    sLog.outDebug("deleting opvp creature type %u",type);
+    sLog.outDebug("deleting opvp creature type %u", type);
     uint32 guid = cr->GetDBTableGUIDLow();
     // dont save respawn time
-    cr->SetRespawnTime(0);
-    cr->RemoveCorpse();
-    cr->CleanupsBeforeDelete();
-    // explicit removal from map
-    // beats me why this is needed, but with the recent removal "cleanup" some creatures stay in the map if "properly" deleted
-    // so this is a big fat workaround, if AddObjectToRemoveList and DoDelayedMovesAndRemoves worked correctly, this wouldn't be needed
-    if(Map * map = MapManager::Instance().FindMap(cr->GetMapId()))
-        map->Remove(cr,false);
     // delete respawn time for this creature
     WorldDatabase.PExecute("DELETE FROM creature_respawn WHERE guid = '%u'", guid);
     cr->AddObjectToRemoveList();
-    objmgr.DeleteCreatureData(guid);
+    objmgr.DeleteCreatureData(guid); // i think this is needed, cause the data gets created through a hack
     m_CreatureTypes[m_Creatures[type]] = 0;
     m_Creatures[type] = 0;
     return true;
@@ -349,10 +341,11 @@ bool OutdoorPvPObjective::DelObject(uint32 type)
     GameObject *obj = HashMapHolder<GameObject>::Find(m_Objects[type]);
     if(!obj)
     {
-		sLog.outError("OutdoorPvPObjective: Can't find gobject guid: %u",m_Objects[type]);
+        sLog.outError("OutdoorPvPObjective: Can't find gobject guid: %u",m_Objects[type]);
         return false;
     }
     uint32 guid = obj->GetDBTableGUIDLow();
+
     obj->SetRespawnTime(0);                                 // not save respawn time
     obj->Delete();
     objmgr.DeleteGOData(guid);
