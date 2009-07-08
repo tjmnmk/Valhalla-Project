@@ -104,8 +104,8 @@ class OutdoorPvPObjective
 
         virtual bool HandleCustomSpell(Player *plr, uint32 /*spellId*/, GameObject * /*go*/)
         {
-            if(!plr->IsOutdoorPvPActive())
-                return false;
+            //if(!plr->IsOutdoorPvPActive()) i don't understand this if
+            //    return false;
             return false;
         }
 
@@ -215,7 +215,7 @@ class OutdoorPvP
         virtual void HandleKillImpl(Player * killer, Unit * killed) {}
 
         // checks if player is in range of a capture credit marker
-        bool IsInsideObjective(Player * plr) { return m_ActivePlayerGuids.find(plr->GetGUID()) != m_ActivePlayerGuids.end(); }
+        bool IsInsideObjective(Player * plr);
 
         // awards rewards for player kill
         virtual void AwardKillBonus(Player * plr) {}

@@ -695,3 +695,8 @@ bool OutdoorPvP::HandleDropFlag(Player * plr, uint32 id)
     }
     return false;
 }
+
+bool OutdoorPvPObjective::IsInsideObjective(Player * plr)
+{
+    return m_ActivePlayerGuids.find(plr->GetGUID()) != m_ActivePlayerGuids.end();
+}
