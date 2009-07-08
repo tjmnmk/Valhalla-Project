@@ -102,21 +102,31 @@ public:
     // checks if player is in range of a capture credit marker
     bool IsInsideObjective(Player * plr);
 
-    virtual bool HandleCustomSpell(Player *plr, uint32 spellId, GameObject * go);
-    virtual int32 HandleOpenGo(Player *plr, uint64 guid);
+    virtual bool HandleCustomSpell(Player *plr, uint32 /*spellId*/, GameObject * /*go*/)
+    {
+        if(!plr->IsOutdoorPvPActive())
+            return false;
+        return false;
+    }
+
+    virtual int32 HandleOpenGo(Player * /*plr*/, uint64 guid)
+    {
+        std::map<uint64,uint32>::iterator itr = m_ObjectTypes.find(guid);
+        if(itr != m_ObjectTypes.end())
+            return itr->second;
+        return -1;
+    }
 
     // returns true if the state of the objective has changed, in this case, the OutdoorPvP must send a world state ui update.
     virtual bool Update(uint32 diff);
 
-    virtual bool HandleCapturePointEvent(Player * plr, uint32 eventId) { return false; }
+    virtual bool HandleCapturePointEvent(Player * /*plr*/, uint32 /*eventId*/) { return false; }
 
     virtual bool HandleCaptureCreaturePlayerMoveInLos(Player * p, Creature * c);
 
-    virtual bool HandleGossipOption(Player *plr, uint64 guid, uint32 gossipid);
-
-    virtual bool CanTalkTo(Player * plr, Creature * c, GossipOption &gso);
-
-    virtual bool HandleDropFlag(Player * plr, uint32 spellId);
+    virtual bool HandleDropFlag(Player * /*plr*/, uint32 /*spellId*/) { return false; }
+    virtual bool HandleGossipOption(Player * /*plr*/, uint64 /*guid*/, uint32 /*gossipid*/) { return true; }
+    virtual bool CanTalkTo(Player * /*plr*/, Creature * /*c*/, GossipOption & /*gso*/) { return false; }
 
     void DeleteSpawns();
 protected:
@@ -181,7 +191,7 @@ public:
     virtual void HandlePlayerLeaveZone(Player * plr, uint32 zone);
     void HandlePlayerActivityChanged(Player * plr);
     // called when a player triggers an areatrigger
-    virtual bool HandleAreaTrigger(Player * plr, uint32 trigger);
+    virtual bool HandleAreaTrigger(Player * /*plr*/, uint32 /*trigger*/) { return false; }
     // called on custom spell
     virtual bool HandleCustomSpell(Player *plr, uint32 spellId, GameObject * go);
     // called on go use
@@ -207,7 +217,7 @@ public:
     virtual void HandleKillImpl(Player * killer, Unit * killed) {}
 
     // checks if player is in range of a capture credit marker
-    bool IsInsideObjective(Player * plr);
+    bool IsInsideObjective(Player * plr) { return m_ActivePlayerGuids.find(plr->GetGUID()) != m_ActivePlayerGuids.end(); }
 
     // awards rewards for player kill
     virtual void AwardKillBonus(Player * plr) {}
