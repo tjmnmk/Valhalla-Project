@@ -27,7 +27,7 @@
 
 OutdoorPvPObjectiveAI::OutdoorPvPObjectiveAI(Creature *c) : CreatureAI(c)
 {
-    sLog.outDebug("OutdoorPvP objective AI assigned to creature guid %u", c->GetGUIDLow());
+    sLog.outDebug("OutdoorPvPObjectiveAI: AI assigned to creature guid %u", c->GetGUIDLow());
 }
 
 void OutdoorPvPObjectiveAI::MoveInLineOfSight(Unit *u)
