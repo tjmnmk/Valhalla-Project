@@ -90,17 +90,17 @@ public:
     virtual void FillInitialWorldStates(WorldPacket & data) {}
 
     // send world state update to all players present
-    virtual void SendUpdateWorldState(uint32 field, uint32 value);
+    void SendUpdateWorldState(uint32 field, uint32 value);
     // send kill notify to players in the controlling faction
-    virtual void SendObjectiveComplete(uint32 id, uint64 guid);
+    void SendObjectiveComplete(uint32 id, uint64 guid);
 
     // used when player is activated/inactivated in the area
     virtual void HandlePlayerEnter(Player * plr);
     virtual void HandlePlayerLeave(Player * plr);
-    virtual void HandlePlayerActivityChanged(Player * plr);
+    void HandlePlayerActivityChanged(Player * plr);
 
     // checks if player is in range of a capture credit marker
-    virtual bool IsInsideObjective(Player * plr);
+    bool IsInsideObjective(Player * plr);
 
     virtual bool HandleCustomSpell(Player *plr, uint32 spellId, GameObject * go);
     virtual int32 HandleOpenGo(Player *plr, uint64 guid);
@@ -118,16 +118,16 @@ public:
 
     virtual bool HandleDropFlag(Player * plr, uint32 spellId);
 
-    virtual void DeleteSpawns();
+    void DeleteSpawns();
 protected:
 
-    virtual bool AddCapturePoint(uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
-    virtual bool AddObject(uint32 type, uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
-    virtual bool AddCreature(uint32 type, uint32 entry, uint32 teamval, uint32 map, float x, float y, float z, float o, uint32 spawntimedelay = 0);
+    bool AddCapturePoint(uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
+    bool AddObject(uint32 type, uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
+    bool AddCreature(uint32 type, uint32 entry, uint32 teamval, uint32 map, float x, float y, float z, float o, uint32 spawntimedelay = 0);
 
-    virtual bool DelCreature(uint32 type);
-    virtual bool DelObject(uint32 type);
-    virtual bool DelCapturePoint();
+    bool DelCreature(uint32 type);
+    bool DelObject(uint32 type);
+    bool DelCapturePoint();
 
 protected:
     // active players in the area of the objective
@@ -179,7 +179,7 @@ public:
     // called from Player::UpdateZone to add / remove buffs given by outdoor pvp events
     virtual void HandlePlayerEnterZone(Player * plr, uint32 zone);
     virtual void HandlePlayerLeaveZone(Player * plr, uint32 zone);
-    virtual void HandlePlayerActivityChanged(Player * plr);
+    void HandlePlayerActivityChanged(Player * plr);
     // called when a player triggers an areatrigger
     virtual bool HandleAreaTrigger(Player * plr, uint32 trigger);
     // called on custom spell
@@ -197,7 +197,7 @@ public:
     virtual void FillInitialWorldStates(WorldPacket & data) {}
 
     // send world state update to all players present
-    virtual void SendUpdateWorldState(uint32 field, uint32 value);
+    void SendUpdateWorldState(uint32 field, uint32 value);
 
     // called by OutdoorPvPMgr, updates the objectives and if needed, sends new worldstateui information
     virtual bool Update(uint32 diff);
@@ -207,7 +207,7 @@ public:
     virtual void HandleKillImpl(Player * killer, Unit * killed) {}
 
     // checks if player is in range of a capture credit marker
-    virtual bool IsInsideObjective(Player * plr);
+    bool IsInsideObjective(Player * plr);
 
     // awards rewards for player kill
     virtual void AwardKillBonus(Player * plr) {}

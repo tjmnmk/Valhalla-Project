@@ -318,7 +318,7 @@ bool OutdoorPvPObjective::DelCreature(uint32 type)
     Creature *cr = HashMapHolder<Creature>::Find(m_Creatures[type]);
     if(!cr)
     {
-        sLog.outError("OutdoorPvPObjective: Can't find creature guid: %u", m_Creatures[type]);
+        sLog.outError("OutdoorPvPObjective: Can't find creature guid: %u", GUID_LOPART(m_Creatures[type]));
         return false;
     }
     sLog.outDebug("deleting opvp creature type %u", type);
@@ -341,7 +341,7 @@ bool OutdoorPvPObjective::DelObject(uint32 type)
     GameObject *obj = HashMapHolder<GameObject>::Find(m_Objects[type]);
     if(!obj)
     {
-        sLog.outError("OutdoorPvPObjective: Can't find gobject guid: %u",m_Objects[type]);
+        sLog.outError("OutdoorPvPObjective: Can't find gobject guid: %u", GUID_LOPART(m_Objects[type]));
         return false;
     }
     uint32 guid = obj->GetDBTableGUIDLow();
@@ -362,7 +362,7 @@ bool OutdoorPvPObjective::DelCapturePoint()
     GameObject *obj = HashMapHolder<GameObject>::Find(m_CapturePoint);
     if(!obj)
     {
-		sLog.outError("OutdoorPvPObjective: Can't find gobject guid: %u",m_CapturePoint);
+        sLog.outError("OutdoorPvPObjective: Can't find gobject guid: %u", GUID_LOPART(m_CapturePoint));
         return false;
     }
     uint32 guid = obj->GetDBTableGUIDLow();
