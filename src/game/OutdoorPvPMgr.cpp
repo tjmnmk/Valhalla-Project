@@ -64,9 +64,9 @@ void OutdoorPvPMgr::CreateOutdoorPvP(uint32 typeId)
     }
     if(!pOP->SetupOutdoorPvP())
     {
-       sLog.outDebug("OutdoorPvPMgr: SetupOutdoorPvP failed for %i.", typeId);
-       delete pOP;
-       return;
+        sLog.outDebug("OutdoorPvPMgr: SetupOutdoorPvP failed for %i.", typeId);
+        delete pOP;
+        return;
     }
     pOP->SetTypeId(typeId);
     m_OutdoorPvPSet.insert(pOP);

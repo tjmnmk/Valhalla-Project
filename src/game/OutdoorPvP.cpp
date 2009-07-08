@@ -28,8 +28,8 @@
 
 OutdoorPvPObjective::OutdoorPvPObjective(OutdoorPvP * pvp)
 : m_PvP(pvp), m_AllianceActivePlayerCount(0), m_HordeActivePlayerCount(0),
-m_ShiftTimer(0), m_ShiftPhase(0), m_ShiftMaxPhase(0), m_OldPhase(0),
-m_State(0), m_OldState(0), m_CapturePoint(0), m_NeutralValue(0), m_ShiftMaxCaptureSpeed(0), m_CapturePointCreature(0)
+    m_ShiftTimer(0), m_ShiftPhase(0), m_ShiftMaxPhase(0), m_OldPhase(0),
+    m_State(0), m_OldState(0), m_CapturePoint(0), m_NeutralValue(0), m_ShiftMaxCaptureSpeed(0), m_CapturePointCreature(0)
 {
 }
 
@@ -565,15 +565,15 @@ void OutdoorPvPObjective::SendObjectiveComplete(uint32 id,uint64 guid)
     uint32 controlling_faction;
     switch(m_State)
     {
-    case OBJECTIVESTATE_ALLIANCE:
-        controlling_faction = ALLIANCE;
-        break;
-    case OBJECTIVESTATE_HORDE:
-        controlling_faction = HORDE;
-        break;
-    default:
-        return;
-        break;
+        case OBJECTIVESTATE_ALLIANCE:
+            controlling_faction = ALLIANCE;
+            break;
+        case OBJECTIVESTATE_HORDE:
+            controlling_faction = HORDE;
+            break;
+        default:
+            return;
+            break;
     }
 
     // send to all players present in the area
