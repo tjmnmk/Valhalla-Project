@@ -125,7 +125,7 @@ class OutdoorPvPObjective
         virtual bool HandleCaptureCreaturePlayerMoveInLos(Player * p, Creature * c);
 
         virtual bool HandleDropFlag(Player * /*plr*/, uint32 /*spellId*/) { return false; }
-        virtual bool HandleGossipOption(Player * /*plr*/, uint64 /*guid*/, uint32 /*gossipid*/) { return true; }
+        virtual bool HandleGossipOption(Player * /*plr*/, uint64 /*guid*/, uint32 /*gossipid*/) { return false; }
         virtual bool CanTalkTo(Player * /*plr*/, Creature * /*c*/, GossipOption & /*gso*/) { return false; }
 
         void DeleteSpawns();
