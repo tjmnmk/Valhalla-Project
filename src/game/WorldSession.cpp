@@ -79,7 +79,7 @@ WorldSession::~WorldSession()
 
 void WorldSession::SizeError(WorldPacket const& packet, uint32 size) const
 {
-    sLog.outError("Client (account %u) send packet %s (%u) with size %u but expected %u (attempt crash server?), skipped",
+    sLog.outError("Client (account %u) send packet %s (%u) with size " SIZEFMTD " but expected %u (attempt crash server?), skipped",
         GetAccountId(),LookupOpcodeName(packet.GetOpcode()),packet.GetOpcode(),packet.size(),size);
 }
 
@@ -389,15 +389,9 @@ void WorldSession::LogoutPlayer(bool Save)
         // the player may not be in the world when logging out
         // e.g if he got disconnected during a transfer to another map
         // calls to GetMap in this case may cause crashes
-        if(_player->IsInWorld()) _player->GetMap()->Remove(_player, false);
-        // RemoveFromWorld does cleanup that requires the player to be in the accessor
-        ObjectAccessor::Instance().RemoveObject(_player);
-
-        ///- Delete the player object
-        _player->CleanupsBeforeDelete();                    // do some cleanup before deleting to prevent crash at crossreferences to already deleted data
-
-        delete _player;
-        _player = NULL;
+        Map* _map = _player->GetMap();
+        _map->Remove(_player, true);
+        _player = NULL;                                     // deleted in Remove call
 
         ///- Send the 'logout complete' packet to the client
         WorldPacket data( SMSG_LOGOUT_COMPLETE, 0 );
