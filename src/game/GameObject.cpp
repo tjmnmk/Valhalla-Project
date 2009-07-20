@@ -157,15 +157,8 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 
     SetGoAnimProgress(animprogress);
 
-<<<<<<< HEAD:src/game/GameObject.cpp
     SetGoArtKit(ArtKit);
 
-    // Spell charges for GAMEOBJECT_TYPE_SPELLCASTER (22)
-    if (goinfo->type == GAMEOBJECT_TYPE_SPELLCASTER)
-        m_charges = goinfo->spellcaster.charges;
-
-=======
->>>>>>> origin/master:src/game/GameObject.cpp
     //Notify the map's instance data.
     //Only works if you create the object in it, not if it is moves to that map.
     //Normally non-players do not teleport to other maps.

@@ -642,10 +642,6 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
 
                     *data << uint32(appendValue);
                 }
-<<<<<<< HEAD:src/game/Object.cpp
-
-
-=======
                 else if (index == UNIT_FIELD_AURASTATE)
                 {
                     if(IsPerCasterAuraState)
@@ -659,7 +655,6 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask 
                     else
                         *data << m_uint32Values[ index ];
                 }
->>>>>>> origin/master:src/game/Object.cpp
                 // FIXME: Some values at server stored in float format but must be sent to client in uint32 format
                 else if(index >= UNIT_FIELD_BASEATTACKTIME && index <= UNIT_FIELD_RANGEDATTACKTIME)
                 {
