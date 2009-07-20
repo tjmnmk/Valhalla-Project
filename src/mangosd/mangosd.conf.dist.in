@@ -488,8 +488,8 @@ LogColors = ""
 #
 #    AllFlightPaths
 #        Players will start with all flight paths (Note: ALL flight paths, not only player's team)
-#        Default: 0 (true)
-#                 1 (false)
+#        Default: 0 (false)
+#                 1 (true)
 #
 #    AlwaysMaxSkillForLevel
 #        Players will automatically gain max level dependent (weapon/defense) skill when logging in, leveling up etc.
@@ -874,7 +874,7 @@ Channel.SilentlyGMJoin = 0
 #
 #    GM.InGMList.Level
 #        Max GM level showed in GM list (if visible) in non-GM state (.gm off)
-#                 0 (only players)
+#                 0 (none)
 #                 1 (only moderators)
 #                 2 (only gamemasters)
 #        Default: 3 (anyone)
