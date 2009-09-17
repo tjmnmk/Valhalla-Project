@@ -1909,6 +1909,28 @@ void Spell::EffectDummy(uint32 i)
                 m_caster->CastCustomSpell(m_caster, 45470, &bp, NULL, NULL, true);
                 return;
             }
+			//Death Grip
+			else if(m_spellInfo->Id == 49576 || m_spellInfo->Id == 49560){
+			  if (!unitTarget || !m_caster)
+                        return;
+
+                    float x = m_caster->GetPositionX();
+                    float y = m_caster->GetPositionY();
+                    float z = m_caster->GetPositionZ()+1;
+                    float orientation = unitTarget->GetOrientation();
+
+                    m_caster->CastSpell(unitTarget,51399,true,NULL);                
+                    
+                    if(unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        {
+                         unitTarget->GetMap()->CreatureRelocation((Creature*)unitTarget,x,y,z,orientation);
+                        ((Creature*)unitTarget)->SendMonsterMove(x, y, z, orientation, MONSTER_MOVE_UNK12, 1);
+                        }
+                    else
+                        unitTarget->NearTeleportTo(x,y,z,orientation,false);
+
+                    return;
+			}
             break;
     }
 
@@ -3295,12 +3317,18 @@ void Spell::EffectSummonType(uint32 i)
         case SUMMON_TYPE_FORCE_OF_NATURE:
         case SUMMON_TYPE_GUARDIAN2:
         case SUMMON_TYPE_GUARDIAN3:
-            // Jewelery statue case (totem like)
-            if(m_spellInfo->SpellIconID == 2056)
-                EffectSummonTotem(i);
-            else
-                EffectSummonGuardian(i);
-            return;
+            if(m_spellInfo->Id == 51533){
+				//Feral Spirit case
+				EffectSummon(i);
+				EffectSummonGuardian(i,1);
+			}else{
+				// Jewelery statue case (totem like)
+				if(m_spellInfo->SpellIconID == 2056)
+					EffectSummonTotem(i);
+				else
+					EffectSummonGuardian(i,0);
+			}
+			return;
         case SUMMON_TYPE_WILD:
             EffectSummonWild(i);
             return;
@@ -3804,7 +3832,7 @@ void Spell::EffectSummonWild(uint32 i)
     }
 }
 
-void Spell::EffectSummonGuardian(uint32 i)
+void Spell::EffectSummonGuardian(uint32 i, uint8 p)
 {
     uint32 pet_entry = m_spellInfo->EffectMiscValue[i];
     if (!pet_entry)
@@ -3845,6 +3873,9 @@ void Spell::EffectSummonGuardian(uint32 i)
     float radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
 
     int32 amount = damage > 0 ? damage : 1;
+	
+	//Feral spirit case
+	if(p == 1){ amount =1; }
 
     for(int32 count = 0; count < amount; ++count)
     {
