@@ -3004,7 +3004,7 @@ void Spell::EffectEnergisePct(uint32 i)
         return;
 
     uint32 gain = damage * maxPower / 100;
-    m_caster->EnergizeBySpell(unitTarget, m_spellInfo->Id, gain, power);
+    unitTarget->EnergizeBySpell(unitTarget, m_spellInfo->Id, gain, power);
 }
 
 void Spell::SendLoot(uint64 guid, LootType loottype)
@@ -3398,7 +3398,7 @@ void Spell::EffectSummonType(uint32 i)
                     EffectSummon(i);
                     break;
                 default:
-                    EffectSummonGuardian(i);
+                    EffectSummonGuardian(i,0);
                     break;
             }
             break;
@@ -3416,7 +3416,7 @@ void Spell::EffectSummonType(uint32 i)
                     EffectSummonCritter(i);
                     break;
                 default:
-                    EffectSummonGuardian(i);
+                    EffectSummonGuardian(i,0);
                     break;
             }
             break;
