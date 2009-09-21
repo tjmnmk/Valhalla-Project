@@ -478,12 +478,12 @@ WorldObject* Spell::FindCorpseUsing()
 
     TypeContainerVisitor<MaNGOS::WorldObjectSearcher<T>, GridTypeMapContainer > grid_searcher(searcher);
     CellLock<GridReadGuard> cell_lock(cell, p);
-    cell_lock->Visit(cell_lock, grid_searcher, *m_caster->GetMap());
+    cell_lock->Visit(cell_lock, grid_searcher, *m_caster->GetMap(), *m_caster, max_range);
 
     if (!result)
     {
         TypeContainerVisitor<MaNGOS::WorldObjectSearcher<T>, WorldTypeMapContainer > world_searcher(searcher);
-        cell_lock->Visit(cell_lock, world_searcher, *m_caster->GetMap());
+        cell_lock->Visit(cell_lock, world_searcher, *m_caster->GetMap(), *m_caster, max_range);
     }
 
     return result;
@@ -1363,8 +1363,8 @@ void Spell::SetTargetMap(uint32 effIndex,uint32 targetMode,UnitList& TagUnitMap)
                 TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyAoETargetUnitInObjectRangeCheck>, GridTypeMapContainer >  grid_unit_searcher(searcher);
 
                 CellLock<GridReadGuard> cell_lock(cell, p);
-                cell_lock->Visit(cell_lock, world_unit_searcher, *m_caster->GetMap());
-                cell_lock->Visit(cell_lock, grid_unit_searcher, *m_caster->GetMap());
+                cell_lock->Visit(cell_lock, world_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
+                cell_lock->Visit(cell_lock, grid_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
             }
 
             if(tempUnitMap.empty())
@@ -1433,8 +1433,8 @@ void Spell::SetTargetMap(uint32 effIndex,uint32 targetMode,UnitList& TagUnitMap)
                 TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>, GridTypeMapContainer >  grid_unit_searcher(searcher);
 
                 CellLock<GridReadGuard> cell_lock(cell, p);
-                cell_lock->Visit(cell_lock, world_unit_searcher, *m_caster->GetMap());
-                cell_lock->Visit(cell_lock, grid_unit_searcher, *m_caster->GetMap());
+                cell_lock->Visit(cell_lock, world_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
+                cell_lock->Visit(cell_lock, grid_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
             }
 
             if(tempUnitMap.empty())
@@ -1529,8 +1529,8 @@ void Spell::SetTargetMap(uint32 effIndex,uint32 targetMode,UnitList& TagUnitMap)
                     TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyAoETargetUnitInObjectRangeCheck>, GridTypeMapContainer>  grid_unit_searcher(searcher);
                     CellLock<GridReadGuard> cell_lock(cell, p);
 
-                    cell_lock->Visit(cell_lock, world_unit_searcher, *m_caster->GetMap());
-                    cell_lock->Visit(cell_lock, grid_unit_searcher, *m_caster->GetMap());
+                    cell_lock->Visit(cell_lock, world_unit_searcher, *m_caster->GetMap(), *pUnitTarget, max_range);
+                    cell_lock->Visit(cell_lock, grid_unit_searcher, *m_caster->GetMap(), *pUnitTarget, max_range);
                 }
                 if (tempUnitMap.empty())
                     break;
@@ -3790,6 +3790,16 @@ SpellCastResult Spell::CheckCast(bool strict)
             if(bg->GetStatus() == STATUS_WAIT_LEAVE)
                 return SPELL_FAILED_DONT_REPORT;
 
+	// Death Pact
+    if(m_spellInfo->Id == 48743 && m_caster->GetTypeId()==TYPEID_PLAYER)
+    {
+        Unit *t1 =  m_caster->GetUnit(*m_caster, ((Player *)m_caster)->GetSelection());
+        if(!t1 || t1->isDead() || !t1->GetOwner()) return SPELL_FAILED_BAD_TARGETS;
+        if(((Creature*)t1)->GetCreatureType()!=CREATURE_TYPE_UNDEAD
+            || t1->GetOwnerGUID() != m_caster->GetGUID()) return SPELL_FAILED_BAD_TARGETS;
+         m_targets.setUnitTarget(t1);
+    }
+
     // only check at first call, Stealth auras are already removed at second call
     // for now, ignore triggered spells
     if( strict && !m_IsTriggeredSpell)
@@ -4095,7 +4105,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
                                 TypeContainerVisitor<MaNGOS::GameObjectLastSearcher<MaNGOS::NearestGameObjectEntryInObjectRangeCheck>, GridTypeMapContainer > object_checker(checker);
                                 CellLock<GridReadGuard> cell_lock(cell, p);
-                                cell_lock->Visit(cell_lock, object_checker, *m_caster->GetMap());
+                                cell_lock->Visit(cell_lock, object_checker, *m_caster->GetMap(), *m_caster, range);
 
                                 if (p_GameObject)
                                 {
@@ -4134,7 +4144,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                             TypeContainerVisitor<MaNGOS::CreatureLastSearcher<MaNGOS::NearestCreatureEntryWithLiveStateInObjectRangeCheck>, GridTypeMapContainer >  grid_creature_searcher(searcher);
 
                             CellLock<GridReadGuard> cell_lock(cell, p);
-                            cell_lock->Visit(cell_lock, grid_creature_searcher, *m_caster->GetMap());
+                            cell_lock->Visit(cell_lock, grid_creature_searcher, *m_caster->GetMap(), *m_caster, range);
 
                             if(p_Creature )
                             {
@@ -5196,7 +5206,8 @@ SpellCastResult Spell::CheckItems()
 
         TypeContainerVisitor<MaNGOS::GameObjectSearcher<MaNGOS::GameObjectFocusCheck>, GridTypeMapContainer > object_checker(checker);
         CellLock<GridReadGuard> cell_lock(cell, p);
-        cell_lock->Visit(cell_lock, object_checker, *m_caster->GetMap());
+        Map& map = *m_caster->GetMap();
+        cell_lock->Visit(cell_lock, object_checker, map, *m_caster, map.GetVisibilityDistance());
 
         if(!ok)
             return SPELL_FAILED_REQUIRES_SPELL_FOCUS;
