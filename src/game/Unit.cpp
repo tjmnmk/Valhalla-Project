@@ -5282,6 +5282,13 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 17941;
                     break;
                 }
+				// Glyph of corruption
+				case 56218:
+				{
+                    target = this;
+                    triggered_spell_id = 17941;
+                    break;
+                }
 				//Soul Leech
                 case 30293:
                 case 30295:
