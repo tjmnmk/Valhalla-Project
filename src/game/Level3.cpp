@@ -70,7 +70,7 @@ bool ChatHandler::HandleReloadAllCommand(const char*)
     HandleReloadReservedNameCommand("");
     HandleReloadMangosStringCommand("");
     HandleReloadGameTeleCommand("");
-
+    HandleReloadBattleEventCommand("");
     HandleReloadVehicleDataCommand("");
     HandleReloadVehicleSeatDataCommand("");
     return true;
@@ -594,6 +594,14 @@ bool ChatHandler::HandleReloadItemRequiredTragetCommand(const char*)
     sLog.outString( "Re-Loading Item Required Targets Table..." );
     objmgr.LoadItemRequiredTarget();
     SendGlobalSysMessage("DB table `item_required_target` reloaded.");
+    return true;
+}
+
+bool ChatHandler::HandleReloadBattleEventCommand(const char*)
+{
+    sLog.outString( "Re-Loading BattleGround Eventindexes..." );
+    sBattleGroundMgr.LoadBattleEventIndexes();
+    SendGlobalSysMessage("DB table `gameobject_battleground` and `creature_battleground` reloaded.");
     return true;
 }
 
