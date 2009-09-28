@@ -5282,7 +5282,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 17941;
                     break;
                 }
-                //Soul Leech
+				//Soul Leech
                 case 30293:
                 case 30295:
                 case 30296:
