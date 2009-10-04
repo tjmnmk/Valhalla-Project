@@ -1988,6 +1988,9 @@ void Player::Regenerate(Powers power, uint32 diff)
         }   break;
         case POWER_RUNE:
         {
+            if (getClass() != CLASS_DEATH_KNIGHT)
+                break;
+
             for(uint32 i = 0; i < MAX_RUNES; ++i)
             {
                 if(uint16 cd = GetRuneCooldown(i))           // if we have cooldown, reduce it...
@@ -2245,7 +2248,7 @@ void Player::SetGameMaster(bool on)
         getHostilRefManager().setOnlineOfflineState(true);
     }
 
-    ObjectAccessor::UpdateVisibilityForPlayer(this);
+    UpdateVisibilityForPlayer();
 }
 
 void Player::SetGMVisible(bool on)
@@ -4241,7 +4244,7 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     UpdateZone(newzone,newarea);
 
     // update visibility
-    ObjectAccessor::UpdateVisibilityForPlayer(this);
+    UpdateVisibilityForPlayer();
 
     if(!applySickness)
         return;
@@ -4294,7 +4297,7 @@ void Player::KillPlayer()
     // don't create corpse at this moment, player might be falling
 
     // update visibility
-    ObjectAccessor::UpdateObjectVisibility(this);
+    UpdateObjectVisibility();
 }
 
 void Player::CreateCorpse()
@@ -10258,10 +10261,42 @@ uint8 Player::CanUseItem( Item *pItem, bool not_loading ) const
             if ((pProto->AllowableClass & getClassMask()) == 0 || (pProto->AllowableRace & getRaceMask()) == 0)
                 return EQUIP_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
 
-            if (pItem->GetSkill() != 0)
+            if (uint32 item_use_skill = pItem->GetSkill())
             {
-                if (GetSkillValue( pItem->GetSkill() ) == 0)
-                    return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+                if (GetSkillValue(item_use_skill) == 0)
+                {
+                    // armor items with scaling stats can downgrade armor skill reqs if related class can learn armor use at some level
+                    if (pProto->Class != ITEM_CLASS_ARMOR)
+                        return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+
+                    ScalingStatDistributionEntry const *ssd = pProto->ScalingStatDistribution ? sScalingStatDistributionStore.LookupEntry(pProto->ScalingStatDistribution) : NULL;
+                    if (!ssd)
+                        return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+
+                    bool allowScaleSkill = false;
+                    for (uint32 i = 0; i < sSkillLineAbilityStore.GetNumRows(); ++i)
+                    {
+                        SkillLineAbilityEntry const *skillInfo = sSkillLineAbilityStore.LookupEntry(i);
+                        if (!skillInfo)
+                            continue;
+
+                        if (skillInfo->skillId != item_use_skill)
+                            continue;
+
+                        // can't learn
+                        if (skillInfo->classmask && (skillInfo->classmask & getClassMask()) == 0)
+                            continue;
+
+                        if (skillInfo->racemask && (skillInfo->racemask & getRaceMask()) == 0)
+                            continue;
+
+                        allowScaleSkill = true;
+                        break;
+                    }
+
+                    if (!allowScaleSkill)
+                        return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
+                }
             }
 
             if (pProto->RequiredSkill != 0)
@@ -15276,7 +15311,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
                     ((questStatusData.m_status == QUEST_STATUS_INCOMPLETE ||
                     questStatusData.m_status == QUEST_STATUS_COMPLETE ||
                     questStatusData.m_status == QUEST_STATUS_FAILED) &&
-                    (!questStatusData.m_rewarded || pQuest->IsDaily())))
+                    (!questStatusData.m_rewarded || pQuest->IsRepeatable())))
                 {
                     SetQuestSlot(slot, quest_id, quest_time);
 
@@ -17899,7 +17934,7 @@ void Player::CorrectMetaGemEnchants(uint8 exceptslot, bool apply)
                                                             //was enchant active with/without item?
                 bool wasactive = EnchantmentFitsRequirements(condition, apply ? exceptslot : -1);
                                                             //should it now be?
-                if(wasactive ^ EnchantmentFitsRequirements(condition, apply ? -1 : exceptslot))
+                if(wasactive != EnchantmentFitsRequirements(condition, apply ? -1 : exceptslot))
                 {
                     // ignore item gem conditions
                                                             //if state changed, (dis)apply enchant
@@ -20734,9 +20769,29 @@ void Player::SetFarSightGUID( uint64 guid )
     SetUInt64Value(PLAYER_FARSIGHT, guid);
 
     // need triggering load grids around new view point
-    ObjectAccessor::UpdateVisibilityForPlayer(this);
+    UpdateVisibilityForPlayer();
 }
 
+void Player::UpdateVisibilityForPlayer()
+{
+    WorldObject const* viewPoint = GetViewPoint();
+    Map* m = GetMap();
+
+    CellPair p(MaNGOS::ComputeCellPair(GetPositionX(), GetPositionY()));
+    Cell cell(p);
+
+    m->UpdatePlayerVisibility(this, cell, p);
+
+    if (this != viewPoint)
+    {
+        CellPair pView(MaNGOS::ComputeCellPair(viewPoint->GetPositionX(), viewPoint->GetPositionY()));
+        Cell cellView(pView);
+
+        m->UpdateObjectsVisibilityFor(this, cellView, pView);
+    }
+    else
+        m->UpdateObjectsVisibilityFor(this, cell, p);
+}
 void Player::_LoadGlyphs(QueryResult *result)
 {
     // SetPQuery(PLAYER_LOGIN_QUERY_LOADGLYPHS, "SELECT spec, glyph1, glyph2, glyph3, glyph4, glyph5, glyph6 from character_glyphs WHERE guid = '%u'", GUID_LOPART(m_guid));
