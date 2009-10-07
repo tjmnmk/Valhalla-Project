@@ -23,7 +23,6 @@
 #include "Player.h"
 #include "ObjectMgr.h"
 #include "WorldSession.h"
-#include "ObjectAccessor.h"
 #include "Object.h"
 #include "Chat.h"
 #include "BattleGroundMgr.h"
@@ -31,11 +30,10 @@
 #include "BattleGround.h"
 #include "ArenaTeam.h"
 #include "Language.h"
+#include "ScriptCalls.h"
 
 void WorldSession::HandleBattlemasterHelloOpcode( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 8);
-
     uint64 guid;
     recv_data >> guid;
     sLog.outDebug( "WORLD: Recvd CMSG_BATTLEMASTER_HELLO Message from (GUID: %u TypeId:%u)", GUID_LOPART(guid),GuidHigh2TypeId(GUID_HIPART(guid)));
@@ -71,8 +69,6 @@ void WorldSession::SendBattlegGroundList( uint64 guid, BattleGroundTypeId bgType
 
 void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 8+4+4+1);
-
     uint64 guid;
     uint32 bgTypeId_;
     uint32 instanceId;
@@ -275,15 +271,16 @@ void WorldSession::HandlePVPLogDataOpcode( WorldPacket & /*recv_data*/ )
 
 void WorldSession::HandleBattlefieldListOpcode( WorldPacket &recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 4 + 1);
-
     sLog.outDebug( "WORLD: Recvd CMSG_BATTLEFIELD_LIST Message");
 
     uint32 bgTypeId;
     recv_data >> bgTypeId;                                  // id from DBC
 
     uint8 fromWhere;
-    recv_data >> fromWhere;                                 // 0 - battlemaster, 1 - UI
+    recv_data >> fromWhere;                                 // 0 - battlemaster (lua: ShowBattlefieldList), 1 - UI (lua: RequestBattlegroundInstanceInfo)
+
+    uint8 unk1;
+    recv_data >> unk1;                                      // unknown 3.2.2
 
     BattlemasterListEntry const* bl = sBattlemasterListStore.LookupEntry(bgTypeId);
     if (!bl)
@@ -299,8 +296,6 @@ void WorldSession::HandleBattlefieldListOpcode( WorldPacket &recv_data )
 
 void WorldSession::HandleBattleFieldPortOpcode( WorldPacket &recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 1+1+4+2+1);
-
     sLog.outDebug( "WORLD: Recvd CMSG_BATTLEFIELD_PORT Message");
 
     uint8 type;                                             // arenatype if arena
@@ -495,8 +490,6 @@ void WorldSession::HandleBattleFieldPortOpcode( WorldPacket &recv_data )
 
 void WorldSession::HandleLeaveBattlefieldOpcode( WorldPacket & /*recv_data*/ )
 {
-    //CHECK_PACKET_SIZE(recv_data, 1+1+4+2);
-
     sLog.outDebug( "WORLD: Recvd CMSG_LEAVE_BATTLEFIELD Message");
 
     //uint8 unk1, unk2;
@@ -579,8 +572,6 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode( WorldPacket & recv_data )
 {
     sLog.outDebug("WORLD: CMSG_AREA_SPIRIT_HEALER_QUERY");
 
-    CHECK_PACKET_SIZE(recv_data, 8);
-
     BattleGround *bg = _player->GetBattleGround();
     if (!bg)
         return;
@@ -595,15 +586,13 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode( WorldPacket & recv_data )
     if(!unit->isSpiritService())                            // it's not spirit service
         return;
 
-    sBattleGroundMgr.SendAreaSpiritHealerQueryOpcode(_player, bg, guid);
+    unit->SendAreaSpiritHealerQueryOpcode(GetPlayer());
 }
 
 void WorldSession::HandleAreaSpiritHealerQueueOpcode( WorldPacket & recv_data )
 {
     sLog.outDebug("WORLD: CMSG_AREA_SPIRIT_HEALER_QUEUE");
 
-    CHECK_PACKET_SIZE(recv_data, 8);
-
     BattleGround *bg = _player->GetBattleGround();
     if (!bg)
         return;
@@ -618,19 +607,13 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode( WorldPacket & recv_data )
     if(!unit->isSpiritService())                            // it's not spirit service
         return;
 
-    bg->AddPlayerToResurrectQueue(guid, _player->GetGUID());
+    Script->GossipHello(GetPlayer(), unit);
 }
 
 void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 8+1+1+1);
-
     sLog.outDebug("WORLD: CMSG_BATTLEMASTER_JOIN_ARENA");
-    recv_data.hexlike();
-
-    // ignore if we already in BG or BG queue
-    if (_player->InBattleGround())
-        return;
+    //recv_data.hexlike();
 
     uint64 guid;                                            // arena Battlemaster guid
     uint8 arenaslot;                                        // 2v2, 3v3 or 5v5
@@ -639,6 +622,10 @@ void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
     Group * grp;
 
     recv_data >> guid >> arenaslot >> asGroup >> isRated;
+
+    // ignore if we already in BG or BG queue
+    if (_player->InBattleGround())
+        return;
 
     Creature *unit = GetPlayer()->GetMap()->GetCreature(guid);
     if (!unit)
@@ -724,7 +711,7 @@ void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
             Player *member = itr->getSource();
 
             // calc avg personal rating
-            avg_pers_rating += member->GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (arenaslot*6) + 5);
+            avg_pers_rating += member->GetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (arenaslot * ARENA_TEAM_END) + ARENA_TEAM_PERSONAL_RATING);
         }
 
         if (arenatype)
@@ -778,8 +765,6 @@ void WorldSession::HandleBattlemasterJoinArena( WorldPacket & recv_data )
 
 void WorldSession::HandleReportPvPAFK( WorldPacket & recv_data )
 {
-    CHECK_PACKET_SIZE(recv_data, 8);
-
     uint64 playerGuid;
     recv_data >> playerGuid;
     Player *reportedPlayer = objmgr.GetPlayer(playerGuid);

@@ -80,6 +80,55 @@ pkgdata_DATA = \
 	8339_01_characters_characters.sql \
 	8339_02_characters_character_battleground_data.sql \
 	8342_01_mangos_spell_proc_event.sql \
+	8361_01_mangos_spell_bonus_data.sql \
+	8364_01_mangos_db_version.sql \
+	8377_01_mangos_spell_area.sql \
+	8392_01_mangos_spell_proc_event.sql \
+	8392_02_mangos_spell_chain.sql \
+	8394_01_mangos_spell_proc_event.sql \
+	8397_01_mangos_spell_chain.sql \
+	8397_02_mangos_spell_threat.sql \
+	8397_03_characters_character_spell.sql \
+	8399_01_mangos_spell_elixir.sql \
+	8402_01_characters_guild_eventlog.sql \
+	8402_02_characters_guild_bank_eventlog.sql \
+	8409_01_characters_guild.sql \
+	8412_01_mangos_mangos_string.sql \
+	8416_01_mangos_spell_learn_spell.sql \
+	8433_01_characters_character_account_data.sql \
+	8444_01_mangos_mangos_string.sql \
+	8451_01_mangos_spell_proc_event.sql \
+	8462_01_mangos_creature_ai_texts.sql \
+	8469_01_characters_character_spell.sql \
+	8482_01_mangos_spell_elixir.sql \
+	8487_01_mangos_spell_bonus_data.sql \
+	8487_02_mangos_spell_proc_event.sql \
+	8488_01_mangos_spell_chain.sql \
+	8488_02_mangos_spell_bonus_data.sql \
+	8498_01_mangos_spell_proc_event.sql \
+	8499_01_mangos_spell_elixir.sql \
+	8504_01_mangos_playercreateinfo_spell.sql \
+	8504_02_mangos_playercreateinfo_action.sql \
+	8505_01_characters_character_spell.sql \
+	8511_01_mangos_spell_proc_event.sql \
+	8514_01_mangos_spell_bonus_data.sql \
+	8521_01_mangos_spell_proc_event.sql \
+	8548_01_mangos_creature_battleground.sql \
+	8548_02_mangos_gameobject_battleground.sql \
+	8549_03_mangos_battleground_events.sql \
+	8573_01_mangos_mangos_string.sql \
+	8589_01_mangos_creature_template.sql \
+	8589_02_mangos_gameobject_template.sql \
+	8589_03_mangos_item_template.sql \
+	8589_04_characters_groups.sql \
+	8589_05_mangos_battleground_template.sql \
+	8589_06_characters_bugreport.sql \
+	8589_07_mangos_spell_elixir.sql \
+	8589_08_mangos_item_template.sql \
+	8589_09_mangos_spell_chain.sql \
+	8589_10_mangos_spell_proc_event.sql \
+	8589_11_characters_characters.sql \
+	8596_01_characters_bugreport.sql \
 	README
 
 ## Additional files to include when running 'make dist'
@@ -140,4 +189,53 @@ EXTRA_DIST = \
 	8339_01_characters_characters.sql \
 	8339_02_characters_character_battleground_data.sql \
 	8342_01_mangos_spell_proc_event.sql \
+	8361_01_mangos_spell_bonus_data.sql \
+	8364_01_mangos_db_version.sql \
+	8377_01_mangos_spell_area.sql \
+	8392_01_mangos_spell_proc_event.sql \
+	8392_02_mangos_spell_chain.sql \
+	8394_01_mangos_spell_proc_event.sql \
+	8397_01_mangos_spell_chain.sql \
+	8397_02_mangos_spell_threat.sql \
+	8397_03_characters_character_spell.sql \
+	8399_01_mangos_spell_elixir.sql \
+	8402_01_characters_guild_eventlog.sql \
+	8402_02_characters_guild_bank_eventlog.sql \
+	8409_01_characters_guild.sql \
+	8412_01_mangos_mangos_string.sql \
+	8416_01_mangos_spell_learn_spell.sql \
+	8433_01_characters_character_account_data.sql \
+	8444_01_mangos_mangos_string.sql \
+	8451_01_mangos_spell_proc_event.sql \
+	8462_01_mangos_creature_ai_texts.sql \
+	8469_01_characters_character_spell.sql \
+	8482_01_mangos_spell_elixir.sql \
+	8487_01_mangos_spell_bonus_data.sql \
+	8487_02_mangos_spell_proc_event.sql \
+	8488_01_mangos_spell_chain.sql \
+	8488_02_mangos_spell_bonus_data.sql \
+	8498_01_mangos_spell_proc_event.sql \
+	8499_01_mangos_spell_elixir.sql \
+	8504_01_mangos_playercreateinfo_spell.sql \
+	8504_02_mangos_playercreateinfo_action.sql \
+	8505_01_characters_character_spell.sql \
+	8511_01_mangos_spell_proc_event.sql \
+	8514_01_mangos_spell_bonus_data.sql \
+	8521_01_mangos_spell_proc_event.sql \
+	8548_01_mangos_creature_battleground.sql \
+	8548_02_mangos_gameobject_battleground.sql \
+	8549_03_mangos_battleground_events.sql \
+	8573_01_mangos_mangos_string.sql \
+	8589_01_mangos_creature_template.sql \
+	8589_02_mangos_gameobject_template.sql \
+	8589_03_mangos_item_template.sql \
+	8589_04_characters_groups.sql \
+	8589_05_mangos_battleground_template.sql \
+	8589_06_characters_bugreport.sql \
+	8589_07_mangos_spell_elixir.sql \
+	8589_08_mangos_item_template.sql \
+	8589_09_mangos_spell_chain.sql \
+	8589_10_mangos_spell_proc_event.sql \
+	8589_11_characters_characters.sql \
+	8596_01_characters_bugreport.sql \
 	README

@@ -69,6 +69,8 @@ class ChatHandler
         void PSendSysMessage(         int32     entry, ...  );
 
         int ParseCommands(const char* text);
+
+        bool isValidChatMessage(const char* msg);
     protected:
         explicit ChatHandler() : m_session(NULL) {}      // for CLI subclass
 
@@ -131,9 +133,10 @@ class ChatHandler
         bool HandleDebugGetItemStateCommand(const char * args);
         bool HandleDebugGetLootRecipientCommand(const char * args);
         bool HandleDebugGetValueCommand(const char* args);
+        bool HandleDebugGetItemValueCommand(const char* args);
         bool HandleDebugMod32ValueCommand(const char* args);
         bool HandleDebugSetAuraStateCommand(const char * args);
-        bool HandleDebugSetItemFlagCommand(const char * args);
+        bool HandleDebugSetItemValueCommand(const char * args);
         bool HandleDebugSetValueCommand(const char* args);
         bool HandleDebugSpawnVehicle(const char * args);
         bool HandleDebugSpellCheckCommand(const char* args);
@@ -324,6 +327,7 @@ class ChatHandler
         bool HandleReloadEventAISummonsCommand(const char* args);
         bool HandleReloadEventAIScriptsCommand(const char* args);
         bool HandleReloadCommandCommand(const char* args);
+        bool HandleReloadBattleEventCommand(const char* args);
         bool HandleReloadCreatureQuestRelationsCommand(const char* args);
         bool HandleReloadCreatureQuestInvRelationsCommand(const char* args);
         bool HandleReloadDbScriptStringCommand(const char* args);
@@ -488,7 +492,6 @@ class ChatHandler
         bool HandleWaterwalkCommand(const char* args);
 
         //! Development Commands
-        bool HandleSet32Bit(const char* args);
         bool HandleSaveAllCommand(const char* args);
 
         Player*   getSelectedPlayer();
