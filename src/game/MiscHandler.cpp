@@ -788,9 +788,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
     {
         BattleGround* bg = GetPlayer()->GetBattleGround();
         if(bg)
-            if(bg->GetStatus() == STATUS_IN_PROGRESS)
-                bg->HandleAreaTrigger(GetPlayer(), Trigger_ID);
-
+            bg->HandleAreaTrigger(GetPlayer(), Trigger_ID);
         return;
     }
 
@@ -1531,7 +1529,10 @@ void WorldSession::HandleMoveSetCanFlyAckOpcode( WorldPacket & recv_data )
     sLog.outDebug("WORLD: CMSG_MOVE_SET_CAN_FLY_ACK");
     //recv_data.hexlike();
 
-    recv_data.read_skip<uint64>();                          // guid
+    uint64 guid;                                            // guid - unused
+    if(!recv_data.readPackGUID(guid))
+        return;
+
     recv_data.read_skip<uint32>();                          // unk
 
     MovementInfo movementInfo;
