@@ -4253,10 +4253,10 @@ void Aura::HandleAuraModEffectImmunity(bool apply, bool /*Real*/)
     {
         if( BattleGround *bg = ((Player*)m_target)->GetBattleGround() )
             bg->EventPlayerDroppedFlag(((Player*)m_target));
-		else if(OutdoorPvP * pvp = ((Player*)m_target)->GetOutdoorPvP())
+        else if(OutdoorPvP * pvp = ((Player*)m_target)->GetOutdoorPvP())
             sOutdoorPvPMgr.HandleDropFlag((Player*)m_target,GetSpellProto()->Id);
 
-	}
+    }
 
     m_target->ApplySpellImmune(GetId(), IMMUNITY_EFFECT, m_modifier.m_miscvalue, apply);
 }
