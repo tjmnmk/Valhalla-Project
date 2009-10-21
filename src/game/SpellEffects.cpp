@@ -3064,7 +3064,7 @@ void Spell::EffectOpenLock(uint32 effIndex)
         }
         // handle outdoor pvp object opening, return true if go was registered for handling
         // these objects must have been spawned by outdoorpvp!
-        else if(gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER && sOutdoorPvPMgr.HandleOpenGo(player, gameObjTarget->GetGUID()))
+        else if(gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER && player->Script_HandleOpenGo(gameObjTarget->GetGUID()))
             return;
         lockId = goInfo->GetLockId();
         guid = gameObjTarget->GetGUID();

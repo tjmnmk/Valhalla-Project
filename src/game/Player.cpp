@@ -279,7 +279,8 @@ std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi)
 
 UpdateMask Player::updateVisualBits;
 
-Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputationMgr(this)
+Player::Player (WorldSession *session)
+: Unit(), m_achievementMgr(this), m_reputationMgr(this)
 {
     m_transport = 0;
 
@@ -473,6 +474,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
     m_lastFallTime = 0;
     m_lastFallZ = 0;
+
+    m_OutdoorPvP = NULL;
 }
 
 Player::~Player ()
@@ -6274,6 +6277,7 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
     if(m_zoneUpdateId != newZone)
     {
         // inform outdoor pvp
+        // OutdoorPvPMgr sets m_OutdoorPvP pointer
         sOutdoorPvPMgr.HandlePlayerLeaveZone(this, m_zoneUpdateId);
         sOutdoorPvPMgr.HandlePlayerEnterZone(this, newZone);
 
@@ -6426,6 +6430,46 @@ void Player::CheckDuelDistance(time_t currTime)
         {
             DuelComplete(DUEL_FLED);
         }
+    }
+}
+
+bool Player::Script_HandleOpenGo(uint64 guid)
+{
+    if (!m_OutdoorPvP)
+        return false;
+
+    return m_OutdoorPvP->HandleOpenGo(this, guid);
+}
+
+bool Player::Script_HandleCaptureCreaturePlayerMoveInLos(Creature * c)
+{
+    if (m_OutdoorPvP)
+        return m_OutdoorPvP->HandleCaptureCreaturePlayerMoveInLos(this, c);
+    return false;
+}
+
+void Player::Script_HandleGossipOption(uint64 guid, uint32 gossipid)
+{
+    if (m_OutdoorPvP)
+    {
+        m_OutdoorPvP->HandleGossipOption(this, guid, gossipid);
+        return;
+    }
+}
+
+bool Player::Script_CanTalkTo(Creature* c, GossipOption & gso)
+{
+    if (m_OutdoorPvP)
+        return m_OutdoorPvP->CanTalkTo(this, c, gso);
+    return false;
+}
+
+void Player::Script_HandleDropFlag(uint32 spellId)
+{
+    if (m_OutdoorPvP)
+    {
+        m_OutdoorPvP->HandleDropFlag(this, spellId);
+        return;
     }
 }
 
@@ -19080,11 +19124,6 @@ void Player::AutoUnequipOffhandIfNeed()
         std::string subject = GetSession()->GetMangosString(LANG_NOT_EQUIPPED_ITEM);
         WorldSession::SendMailTo(this, MAIL_NORMAL, MAIL_STATIONERY_GM, GetGUIDLow(), GetGUIDLow(), subject, 0, &mi, 0, 0, MAIL_CHECK_MASK_NONE);
     }
-}
-
-OutdoorPvP * Player::GetOutdoorPvP() const
-{
-    return sOutdoorPvPMgr.GetOutdoorPvPToZoneId(GetZoneId());
 }
 
 bool Player::HasItemFitToSpellReqirements(SpellEntry const* spellInfo, Item const* ignoreItem)

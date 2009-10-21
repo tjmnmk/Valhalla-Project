@@ -1641,8 +1641,6 @@ void World::Update(uint32 diff)
         MapManager::Instance().Update(diff);                // As interval = 0
 
         sBattleGroundMgr.Update(diff);
-
-        sOutdoorPvPMgr.Update(diff);
     }
 
     // execute callbacks from sql queries that were queued recently
