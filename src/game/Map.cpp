@@ -704,9 +704,12 @@ void Map::Update(const uint32 &t_diff)
     }
 
     // Update OutdoorPvP.
-    if (m_OutdoorPvP)
-        if (t_diff < OUTDOORPVP_OBJECTIVE_UPDATE_INTERVAL)
-            m_OutdoorPvP->Update(t_diff);
+    if (t_diff < OUTDOORPVP_OBJECTIVE_UPDATE_INTERVAL)
+    {
+        std::map<uint32, OutdoorPvP*>::iterator itr = m_OutdoorPvP.begin();
+        for(; itr != m_OutdoorPvP.end(); ++itr)
+            itr->second->Update(t_diff);
+    }
 
     // Don't unload grids if it's battleground, since we may have manually added GOs,creatures, those doesn't load from DB at grid re-load !
     // This isn't really bother us, since as soon as we have instanced BG-s, the whole map unloads as the BG gets ended
