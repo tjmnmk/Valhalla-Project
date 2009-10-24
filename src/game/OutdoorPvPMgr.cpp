@@ -112,23 +112,6 @@ void OutdoorPvPMgr::NotifyMapAdded(Map* map)
     }
 }
 
-void OutdoorPvPMgr::NotifyMapDeleted(Map* map)
-{
-    // World maps only - it's outdoor after all.
-    if (map->Instanceable())
-        return;
-
-    for (OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.begin(); itr != m_OutdoorPvPMap.end(); ++itr)
-    {
-        if (itr->second->GetMap() == map)
-        {
-            uint32 zone_id = itr->first;
-            itr->second->SetMap(NULL);
-            map->RemoveOutdoorPvP(zone_id);
-        }
-    }
-}
-
 void OutdoorPvPMgr::HandlePlayerEnterZone(Player *plr, uint32 zoneid)
 {
     OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(zoneid);

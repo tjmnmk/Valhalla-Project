@@ -64,7 +64,10 @@ Map::~Map()
         sWorld.DecreaseScheduledScriptCount(m_scriptSchedule.size());
 
     // removes the mappointer from an outdoorpvp-class
-    sOutdoorPvPMgr.NotifyMapDeleted(this);
+    std::map<uint32, OutdoorPvP*>::iterator itr = m_OutdoorPvP.begin();
+    for(; itr != m_OutdoorPvP.end(); ++itr)
+        itr->second->SetMap(NULL);
+
 }
 
 bool Map::ExistMap(uint32 mapid,int gx,int gy)
