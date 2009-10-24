@@ -108,7 +108,7 @@ void OutdoorPvPMgr::NotifyMapAdded(Map* map)
 
         // We are now sure this is a map we can use.
         itr->second->SetMap(map);
-        map->SetOutdoorPvP(itr->second, zone_id);
+        map->AddOutdoorPvP(itr->second, zone_id);
     }
 }
 
@@ -124,7 +124,7 @@ void OutdoorPvPMgr::NotifyMapDeleted(Map* map)
         {
             uint32 zone_id = itr->first;
             itr->second->SetMap(NULL);
-            map->SetOutdoorPvP(NULL, zone_id);
+            map->RemoveOutdoorPvP(zone_id);
         }
     }
 }
