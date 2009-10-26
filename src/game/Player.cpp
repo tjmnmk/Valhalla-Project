@@ -6278,8 +6278,11 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
     {
         // inform outdoor pvp
         // OutdoorPvPMgr sets m_OutdoorPvP pointer
-        sOutdoorPvPMgr.HandlePlayerLeaveZone(this, m_zoneUpdateId);
-        sOutdoorPvPMgr.HandlePlayerEnterZone(this, newZone);
+        if (GetOutdoorPvP())
+            GetOutdoorPvP()->HandlePlayerLeaveZone(this, m_zoneUpdateId);
+        SetOutdoorPvP(GetMap()->GetOutdoorPvP(newZone));
+        if (GetOutdoorPvP())
+            GetOutdoorPvP()->HandlePlayerEnterZone(this, newZone);
 
         SendInitWorldStates(newZone, newArea);              // only if really enters to new zone, not just area change, works strange...
 

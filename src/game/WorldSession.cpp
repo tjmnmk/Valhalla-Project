@@ -352,7 +352,8 @@ void WorldSession::LogoutPlayer(bool Save)
             bg->EventPlayerLoggedOut(_player);
 
         ///- Remove from OutdoorPvP
-        sOutdoorPvPMgr.HandlePlayerLeaveZone(_player,_player->GetZoneId());
+        if (_player->GetOutdoorPvP())
+            _player->GetOutdoorPvP()->HandlePlayerLeaveZone(_player, _player->GetZoneId());
 
         ///- Teleport to home if the player is in an invalid instance
         if(!_player->m_InstanceValid && !_player->isGameMaster())

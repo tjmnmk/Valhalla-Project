@@ -112,37 +112,6 @@ void OutdoorPvPMgr::NotifyMapAdded(Map* map)
     }
 }
 
-void OutdoorPvPMgr::HandlePlayerEnterZone(Player *plr, uint32 zoneid)
-{
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(zoneid);
-    if(itr == m_OutdoorPvPMap.end())
-        return;
-    // add possibly beneficial buffs to plr for zone
-    itr->second->HandlePlayerEnterZone(plr, zoneid);
-    plr->SetOutdoorPvP(itr->second);
-    sLog.outDebug("OutdoorPvPMgr: Player %u entered outdoorpvp id %u", plr->GetGUIDLow(), itr->second->GetTypeId());
-}
-
-void OutdoorPvPMgr::HandlePlayerLeaveZone(Player *plr, uint32 zoneid)
-{
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(zoneid);
-    if(itr == m_OutdoorPvPMap.end())
-        return;
-    // inform the OutdoorPvP class of the leaving, it should remove the player from all objectives
-    itr->second->HandlePlayerLeaveZone(plr, zoneid);
-    plr->SetOutdoorPvP(NULL);
-
-    sLog.outDebug("OutdoorPvPMgr: Player %u left outdoorpvp id %u", plr->GetGUIDLow(), itr->second->GetTypeId());
-}
-
-OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPToZoneId(uint32 zoneid)
-{
-    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(zoneid);
-    if(itr == m_OutdoorPvPMap.end())
-        return NULL;
-    return itr->second;
-}
-
 bool OutdoorPvPMgr::HandleCustomSpell(Player *plr, uint32 spellId, GameObject * go)
 {
     for(OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
