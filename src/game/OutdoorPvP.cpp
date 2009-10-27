@@ -285,8 +285,11 @@ void OutdoorPvP::HandlePlayerLeaveZone(Player * plr, uint32 zone)
     for(OutdoorPvPObjectiveSet::iterator itr = m_OutdoorPvPObjectives.begin(); itr != m_OutdoorPvPObjectives.end(); ++itr)
         (*itr)->HandlePlayerLeave(plr);
     // remove the world state information from the player (we can't keep everyone up to date, so leave out those who are not in the concerning zones)
-    if(zone != plr->GetZoneId())
+    // outcommenting as test, i think worldstates don't must be removed,
+    // if player changes zone i think client handles this already
+    /* if(zone != plr->GetZoneId())
         SendRemoveWorldStates(plr);
+    */
     if(plr->GetTeam()==ALLIANCE)
         m_PlayerGuids[0].erase(plr->GetGUID());
     else
