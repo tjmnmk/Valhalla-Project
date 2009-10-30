@@ -21,7 +21,6 @@
 #include "Policies/SingletonImp.h"
 #include "Database/DatabaseEnv.h"
 #include "Log.h"
-#include "ObjectAccessor.h"
 #include "Transports.h"
 #include "GridDefines.h"
 #include "MapInstanced.h"
@@ -185,13 +184,13 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player)
         MapDifficulty const* mapDiff = GetMapDifficultyData(entry->MapID,player->GetDifficulty(entry->map_type == MAP_RAID));
         if (!mapDiff)
         {
-            bool isHeroicTargetMap = entry->map_type == MAP_RAID
-                ? (player->GetRaidDifficulty()    >= RAID_DIFFICULTY_10MAN_HEROIC)
-                : (player->GetDungeonDifficulty() >= DUNGEON_DIFFICULTY_HEROIC);
+            bool isNormalTargetMap = entry->map_type == MAP_RAID
+                ? (player->GetRaidDifficulty()    == RAID_DIFFICULTY_10MAN_NORMAL)
+                : (player->GetDungeonDifficulty() == DUNGEON_DIFFICULTY_NORMAL);
 
             //Send aborted message
             // FIX ME: what about absent normal/heroic mode with specific players limit...
-            player->SendTransferAborted(mapid, TRANSFER_ABORT_DIFFICULTY, isHeroicTargetMap ? DUNGEON_DIFFICULTY_HEROIC : DUNGEON_DIFFICULTY_NORMAL);
+            player->SendTransferAborted(mapid, TRANSFER_ABORT_DIFFICULTY, isNormalTargetMap ? DUNGEON_DIFFICULTY_NORMAL : DUNGEON_DIFFICULTY_HEROIC);
             return false;
         }
 
@@ -268,7 +267,6 @@ MapManager::Update(uint32 diff)
         iter->second->Update(i_timer.GetCurrent());
     }
 
-    ObjectAccessor::Instance().Update(i_timer.GetCurrent());
     for (TransportSet::iterator iter = m_Transports.begin(); iter != m_Transports.end(); ++iter)
         (*iter)->Update(i_timer.GetCurrent());
 
