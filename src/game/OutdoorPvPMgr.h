@@ -34,13 +34,14 @@ class OutdoorPvPMgr
         OutdoorPvPMgr();
         ~OutdoorPvPMgr();
 
-        void CreateOutdoorPvP(uint32 typeId);
+        void CreateOutdoorPvP(uint32 typeId, uint32 mapId);
         // create outdoor pvp events
         void InitOutdoorPvP();
         // handle custom (non-exist in dbc) spell if registered
         bool HandleCustomSpell(Player* plr, uint32 spellId, GameObject* go);
 
         void AddZone(uint32 zoneid, OutdoorPvP * handle);
+        OutdoorPvP* GetOutdoorPvPToZoneId(uint32 zoneid);
 
         // called from constructor of map.. can set the mappointer to
         // an outdoor-class

@@ -222,8 +222,9 @@ class OutdoorPvP
         // awards rewards for player kill
         virtual void AwardKillBonus(Player * plr) {}
 
-        uint32 GetTypeId() {return m_TypeId;}
-        void SetTypeId(uint32 TypeID) { m_TypeId = TypeID; }
+
+        uint32 GetTypeId()                  { return m_TypeId;}
+        void SetTypeId(uint32 TypeID)       { m_TypeId = TypeID; }
 
         virtual bool HandleDropFlag(Player * plr, uint32 spellId);
 
@@ -231,6 +232,11 @@ class OutdoorPvP
 
         virtual bool CanTalkTo(Player * plr, Creature * c, GossipOption &gso);
 
+        /* Location */
+        void SetMapId(uint32 MapID) { m_MapId = MapID; }
+        uint32 GetMapId() const { return m_MapId; }
+
+        /* Map pointers */
         void SetMap(Map* map) { m_Map = map; }
         Map* GetMap() { return m_Map; }
     protected:
@@ -240,6 +246,7 @@ class OutdoorPvP
         std::set<uint64> m_PlayerGuids[2];
         uint32 m_TypeId;
 
+        uint32 m_MapId;
         Map* m_Map;
 };
 

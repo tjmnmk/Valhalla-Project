@@ -428,8 +428,8 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
 
         void RemoveFromActive(Creature* obj);
 
-        OutdoorPvP* GetOutdoorPvP(uint32 zone_id) { return (m_OutdoorPvP.find(zone_id) != m_OutdoorPvP.end()) ? m_OutdoorPvP[zone_id] : NULL; }
-        void AddOutdoorPvP(OutdoorPvP* pvp, uint32 zone_id) { m_OutdoorPvP[zone_id] = pvp; }
+        OutdoorPvP* GetOutdoorPvP(uint32 typeId) { return (m_OutdoorPvP.find(typeId) != m_OutdoorPvP.end()) ? m_OutdoorPvP[typeId] : NULL; }
+        void AddOutdoorPvP(OutdoorPvP* pvp, uint32 typeId) { m_OutdoorPvP[typeId] = pvp; }
 
         Creature* GetCreature(uint64 guid);
         Vehicle* GetVehicle(uint64 guid);

@@ -25,6 +25,7 @@
 #include "OutdoorPvPEP.h"
 #include "OutdoorPvPLA.h"
 #include "Player.h"
+#include "World.h"
 #include "Policies/SingletonImp.h"
 
 INSTANTIATE_SINGLETON_1( OutdoorPvPMgr );
@@ -41,7 +42,7 @@ OutdoorPvPMgr::~OutdoorPvPMgr()
         (*itr)->DeleteSpawns();
 }
 
-void OutdoorPvPMgr::CreateOutdoorPvP(uint32 typeId)
+void OutdoorPvPMgr::CreateOutdoorPvP(uint32 typeId, uint32 mapId)
 {
     OutdoorPvP * pOP = NULL;
     switch (typeId)
@@ -67,25 +68,39 @@ void OutdoorPvPMgr::CreateOutdoorPvP(uint32 typeId)
         return;
     }
     pOP->SetTypeId(typeId);
-    m_OutdoorPvPSet.insert(pOP);
-    sLog.outDebug("OutdoorPvPMgr: init successfull for %i.", typeId);
+    pOP->SetMapId(mapId);
 
+    if (sMapStore.LookupEntry(mapId))
+    {
+        m_OutdoorPvPSet.insert(pOP);
+        sLog.outDebug("OutdoorPvPMgr: init successfull for %i.", typeId);
+    }
+    else
+        sLog.outError("OutdoorPvPMgr: init not successfull for %i cause of unknown map.", typeId);
 }
 
 void OutdoorPvPMgr::InitOutdoorPvP()
 {
-    CreateOutdoorPvP(OUTDOOR_PVP_HP);
-    CreateOutdoorPvP(OUTDOOR_PVP_NA);
-    CreateOutdoorPvP(OUTDOOR_PVP_TF);
-    CreateOutdoorPvP(OUTDOOR_PVP_ZM);
-    CreateOutdoorPvP(OUTDOOR_PVP_SI);
-    CreateOutdoorPvP(OUTDOOR_PVP_EP);
-    CreateOutdoorPvP(OUTDOOR_PVP_LA);
+    CreateOutdoorPvP(OUTDOOR_PVP_HP, 530);
+    CreateOutdoorPvP(OUTDOOR_PVP_NA, 530);
+    CreateOutdoorPvP(OUTDOOR_PVP_TF, 530);
+    CreateOutdoorPvP(OUTDOOR_PVP_ZM, 530);
+    CreateOutdoorPvP(OUTDOOR_PVP_SI, 1);
+    CreateOutdoorPvP(OUTDOOR_PVP_EP, 1);
+    CreateOutdoorPvP(OUTDOOR_PVP_LA, 571);
 }
 
 void OutdoorPvPMgr::AddZone(uint32 zoneid, OutdoorPvP *handle)
 {
     m_OutdoorPvPMap[zoneid] = handle;
+}
+
+OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPToZoneId(uint32 zoneid)
+{
+    OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(zoneid);
+    if(itr == m_OutdoorPvPMap.end())
+        return NULL;
+    return itr->second;
 }
 
 void OutdoorPvPMgr::NotifyMapAdded(Map* map)
@@ -94,21 +109,14 @@ void OutdoorPvPMgr::NotifyMapAdded(Map* map)
     if (map->Instanceable())
         return;
 
-    for (OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.begin(); itr != m_OutdoorPvPMap.end(); ++itr)
+    for(OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
     {
-        if (itr->second->GetMap())                          // has already a map
-            continue;
-        uint32 zone_id = itr->first;
-        AreaTableEntry const* area = sAreaStore.LookupEntry(zone_id);
-        if (!area)
-            continue;
-
-        if (area->mapid != map->GetId())
-            continue;
-
-        // We are now sure this is a map we can use.
-        itr->second->SetMap(map);
-        map->AddOutdoorPvP(itr->second, zone_id);
+        OutdoorPvP* opvp = *itr;
+        if (!opvp->GetMap() && opvp->GetMapId() == map->GetId())
+        {
+            opvp->SetMap(map);
+            map->AddOutdoorPvP(opvp, opvp->GetTypeId());
+        }
     }
 }
 

@@ -6277,7 +6277,7 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
         // OutdoorPvPMgr sets m_OutdoorPvP pointer
         if (GetOutdoorPvP())
             GetOutdoorPvP()->HandlePlayerLeaveZone(this, m_zoneUpdateId);
-        SetOutdoorPvP(GetMap()->GetOutdoorPvP(newZone));
+        SetOutdoorPvP(sOutdoorPvPMgr.GetOutdoorPvPToZoneId(newZone));
         if (GetOutdoorPvP())
             GetOutdoorPvP()->HandlePlayerEnterZone(this, newZone);
 
