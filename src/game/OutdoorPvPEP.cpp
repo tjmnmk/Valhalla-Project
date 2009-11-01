@@ -38,8 +38,8 @@ OutdoorPvPEP::OutdoorPvPEP()
 OutdoorPvPObjectiveEP_EWT::OutdoorPvPObjectiveEP_EWT(OutdoorPvP *pvp)
 : OutdoorPvPObjective(pvp), m_TowerState(EP_TS_N)
 {
-    AddCapturePoint(EPCapturePoints[EP_EWT].entry,EPCapturePoints[EP_EWT].map,EPCapturePoints[EP_EWT].x,EPCapturePoints[EP_EWT].y,EPCapturePoints[EP_EWT].z,EPCapturePoints[EP_EWT].o,EPCapturePoints[EP_EWT].rot0,EPCapturePoints[EP_EWT].rot1,EPCapturePoints[EP_EWT].rot2,EPCapturePoints[EP_EWT].rot3);
-    AddObject(EP_EWT_FLAGS,EPTowerFlags[EP_EWT].entry,EPTowerFlags[EP_EWT].map,EPTowerFlags[EP_EWT].x,EPTowerFlags[EP_EWT].y,EPTowerFlags[EP_EWT].z,EPTowerFlags[EP_EWT].o,EPTowerFlags[EP_EWT].rot0,EPTowerFlags[EP_EWT].rot1,EPTowerFlags[EP_EWT].rot2,EPTowerFlags[EP_EWT].rot3);
+    AddCapturePoint(EPCapturePoints[EP_EWT].entry, EPCapturePoints[EP_EWT].x,EPCapturePoints[EP_EWT].y,EPCapturePoints[EP_EWT].z,EPCapturePoints[EP_EWT].o,EPCapturePoints[EP_EWT].rot0,EPCapturePoints[EP_EWT].rot1,EPCapturePoints[EP_EWT].rot2,EPCapturePoints[EP_EWT].rot3);
+    AddObject(EP_EWT_FLAGS,EPTowerFlags[EP_EWT].entry, EPTowerFlags[EP_EWT].x,EPTowerFlags[EP_EWT].y,EPTowerFlags[EP_EWT].z,EPTowerFlags[EP_EWT].o,EPTowerFlags[EP_EWT].rot0,EPTowerFlags[EP_EWT].rot1,EPTowerFlags[EP_EWT].rot2,EPTowerFlags[EP_EWT].rot3);
 }
 
 bool OutdoorPvPObjectiveEP_EWT::Update(uint32 diff)
@@ -194,7 +194,7 @@ void OutdoorPvPObjectiveEP_EWT::SummonSupportUnitAtNorthpassTower(uint32 team)
     for(int i = 0; i < EP_EWT_NUM_CREATURES; ++i)
     {
         DelCreature(i);
-        AddCreature(i,ct[i].entry,ct[i].teamval,ct[i].map,ct[i].x,ct[i].y,ct[i].z,ct[i].o,1000000);
+        AddCreature(i,ct[i].entry,ct[i].teamval, ct[i].x,ct[i].y,ct[i].z,ct[i].o,1000000);
     }
 }
 
@@ -202,8 +202,8 @@ void OutdoorPvPObjectiveEP_EWT::SummonSupportUnitAtNorthpassTower(uint32 team)
 OutdoorPvPObjectiveEP_NPT::OutdoorPvPObjectiveEP_NPT(OutdoorPvP *pvp)
 : OutdoorPvPObjective(pvp), m_TowerState(EP_TS_N)
 {
-    AddCapturePoint(EPCapturePoints[EP_NPT].entry,EPCapturePoints[EP_NPT].map,EPCapturePoints[EP_NPT].x,EPCapturePoints[EP_NPT].y,EPCapturePoints[EP_NPT].z,EPCapturePoints[EP_NPT].o,EPCapturePoints[EP_NPT].rot0,EPCapturePoints[EP_NPT].rot1,EPCapturePoints[EP_NPT].rot2,EPCapturePoints[EP_NPT].rot3);
-    AddObject(EP_NPT_FLAGS,EPTowerFlags[EP_NPT].entry,EPTowerFlags[EP_NPT].map,EPTowerFlags[EP_NPT].x,EPTowerFlags[EP_NPT].y,EPTowerFlags[EP_NPT].z,EPTowerFlags[EP_NPT].o,EPTowerFlags[EP_NPT].rot0,EPTowerFlags[EP_NPT].rot1,EPTowerFlags[EP_NPT].rot2,EPTowerFlags[EP_NPT].rot3);
+    AddCapturePoint(EPCapturePoints[EP_NPT].entry, EPCapturePoints[EP_NPT].x,EPCapturePoints[EP_NPT].y,EPCapturePoints[EP_NPT].z,EPCapturePoints[EP_NPT].o,EPCapturePoints[EP_NPT].rot0,EPCapturePoints[EP_NPT].rot1,EPCapturePoints[EP_NPT].rot2,EPCapturePoints[EP_NPT].rot3);
+    AddObject(EP_NPT_FLAGS,EPTowerFlags[EP_NPT].entry, EPTowerFlags[EP_NPT].x,EPTowerFlags[EP_NPT].y,EPTowerFlags[EP_NPT].z,EPTowerFlags[EP_NPT].o,EPTowerFlags[EP_NPT].rot0,EPTowerFlags[EP_NPT].rot1,EPTowerFlags[EP_NPT].rot2,EPTowerFlags[EP_NPT].rot3);
 }
 
 bool OutdoorPvPObjectiveEP_NPT::Update(uint32 diff)
@@ -351,7 +351,7 @@ bool OutdoorPvPObjectiveEP_NPT::HandleCapturePointEvent(Player *plr, uint32 even
 void OutdoorPvPObjectiveEP_NPT::SummonGO(uint32 team)
 {
     DelObject(EP_NPT_BUFF);
-    AddObject(EP_NPT_BUFF,EP_NPT_LordaeronShrine.entry,EP_NPT_LordaeronShrine.map,EP_NPT_LordaeronShrine.x,EP_NPT_LordaeronShrine.y,EP_NPT_LordaeronShrine.z,EP_NPT_LordaeronShrine.o,EP_NPT_LordaeronShrine.rot0,EP_NPT_LordaeronShrine.rot1,EP_NPT_LordaeronShrine.rot2,EP_NPT_LordaeronShrine.rot3);
+    AddObject(EP_NPT_BUFF,EP_NPT_LordaeronShrine.entry, EP_NPT_LordaeronShrine.x,EP_NPT_LordaeronShrine.y,EP_NPT_LordaeronShrine.z,EP_NPT_LordaeronShrine.o,EP_NPT_LordaeronShrine.rot0,EP_NPT_LordaeronShrine.rot1,EP_NPT_LordaeronShrine.rot2,EP_NPT_LordaeronShrine.rot3);
 
     Map* map = m_PvP->GetMap();
     GameObject * go = map->GetGameObject(m_Objects[EP_NPT_BUFF]);
@@ -365,8 +365,8 @@ void OutdoorPvPObjectiveEP_NPT::SummonGO(uint32 team)
 OutdoorPvPObjectiveEP_CGT::OutdoorPvPObjectiveEP_CGT(OutdoorPvP *pvp)
 : OutdoorPvPObjective(pvp), m_TowerState(EP_TS_N)
 {
-    AddCapturePoint(EPCapturePoints[EP_CGT].entry,EPCapturePoints[EP_CGT].map,EPCapturePoints[EP_CGT].x,EPCapturePoints[EP_CGT].y,EPCapturePoints[EP_CGT].z,EPCapturePoints[EP_CGT].o,EPCapturePoints[EP_CGT].rot0,EPCapturePoints[EP_CGT].rot1,EPCapturePoints[EP_CGT].rot2,EPCapturePoints[EP_CGT].rot3);
-    AddObject(EP_CGT_FLAGS,EPTowerFlags[EP_CGT].entry,EPTowerFlags[EP_CGT].map,EPTowerFlags[EP_CGT].x,EPTowerFlags[EP_CGT].y,EPTowerFlags[EP_CGT].z,EPTowerFlags[EP_CGT].o,EPTowerFlags[EP_CGT].rot0,EPTowerFlags[EP_CGT].rot1,EPTowerFlags[EP_CGT].rot2,EPTowerFlags[EP_CGT].rot3);
+    AddCapturePoint(EPCapturePoints[EP_CGT].entry, EPCapturePoints[EP_CGT].x,EPCapturePoints[EP_CGT].y,EPCapturePoints[EP_CGT].z,EPCapturePoints[EP_CGT].o,EPCapturePoints[EP_CGT].rot0,EPCapturePoints[EP_CGT].rot1,EPCapturePoints[EP_CGT].rot2,EPCapturePoints[EP_CGT].rot3);
+    AddObject(EP_CGT_FLAGS,EPTowerFlags[EP_CGT].entry, EPTowerFlags[EP_CGT].x,EPTowerFlags[EP_CGT].y,EPTowerFlags[EP_CGT].z,EPTowerFlags[EP_CGT].o,EPTowerFlags[EP_CGT].rot0,EPTowerFlags[EP_CGT].rot1,EPTowerFlags[EP_CGT].rot2,EPTowerFlags[EP_CGT].rot3);
 }
 
 bool OutdoorPvPObjectiveEP_CGT::Update(uint32 diff)
@@ -520,8 +520,8 @@ void OutdoorPvPObjectiveEP_CGT::LinkGraveYard(uint32 team)
 OutdoorPvPObjectiveEP_PWT::OutdoorPvPObjectiveEP_PWT(OutdoorPvP *pvp)
 : OutdoorPvPObjective(pvp), m_TowerState(EP_TS_N)
 {
-    AddCapturePoint(EPCapturePoints[EP_PWT].entry,EPCapturePoints[EP_PWT].map,EPCapturePoints[EP_PWT].x,EPCapturePoints[EP_PWT].y,EPCapturePoints[EP_PWT].z,EPCapturePoints[EP_PWT].o,EPCapturePoints[EP_PWT].rot0,EPCapturePoints[EP_PWT].rot1,EPCapturePoints[EP_PWT].rot2,EPCapturePoints[EP_PWT].rot3);
-    AddObject(EP_PWT_FLAGS,EPTowerFlags[EP_PWT].entry,EPTowerFlags[EP_PWT].map,EPTowerFlags[EP_PWT].x,EPTowerFlags[EP_PWT].y,EPTowerFlags[EP_PWT].z,EPTowerFlags[EP_PWT].o,EPTowerFlags[EP_PWT].rot0,EPTowerFlags[EP_PWT].rot1,EPTowerFlags[EP_PWT].rot2,EPTowerFlags[EP_PWT].rot3);
+    AddCapturePoint(EPCapturePoints[EP_PWT].entry, EPCapturePoints[EP_PWT].x,EPCapturePoints[EP_PWT].y,EPCapturePoints[EP_PWT].z,EPCapturePoints[EP_PWT].o,EPCapturePoints[EP_PWT].rot0,EPCapturePoints[EP_PWT].rot1,EPCapturePoints[EP_PWT].rot2,EPCapturePoints[EP_PWT].rot3);
+    AddObject(EP_PWT_FLAGS,EPTowerFlags[EP_PWT].entry, EPTowerFlags[EP_PWT].x,EPTowerFlags[EP_PWT].y,EPTowerFlags[EP_PWT].z,EPTowerFlags[EP_PWT].o,EPTowerFlags[EP_PWT].rot0,EPTowerFlags[EP_PWT].rot1,EPTowerFlags[EP_PWT].rot2,EPTowerFlags[EP_PWT].rot3);
     memset(m_taximask, 0, sizeof(m_taximask));
     SetTaximaskNode(EP_PWT_Taxi);
     SetTaximaskNode(EP_CGT_Taxi);
@@ -674,7 +674,7 @@ bool OutdoorPvPObjectiveEP_PWT::HandleCapturePointEvent(Player *plr, uint32 even
 void OutdoorPvPObjectiveEP_PWT::SummonFlightMaster(uint32 team)
 {
     DelCreature(EP_PWT_FLIGHTMASTER);
-    AddCreature(EP_PWT_FLIGHTMASTER,EP_PWT_FlightMaster.entry,team,EP_PWT_FlightMaster.map,EP_PWT_FlightMaster.x,EP_PWT_FlightMaster.y,EP_PWT_FlightMaster.z,EP_PWT_FlightMaster.o);
+    AddCreature(EP_PWT_FLIGHTMASTER,EP_PWT_FlightMaster.entry,team, EP_PWT_FlightMaster.x,EP_PWT_FlightMaster.y,EP_PWT_FlightMaster.z,EP_PWT_FlightMaster.o);
 
     Map* map = m_PvP->GetMap();
     Creature * c = map->GetCreature(m_Creatures[EP_PWT_FLIGHTMASTER]);

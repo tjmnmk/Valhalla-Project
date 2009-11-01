@@ -41,16 +41,17 @@ const uint32 ZM_AlliancePlayerKillReward = 32155;
 const uint32 ZM_HordePlayerKillReward = 32158;
 
 // banners 182527, 182528, 182529, gotta check them ingame
-const go_type ZM_Banner_A = { 182527,530,253.54,7083.81,36.7728,-0.017453,0,0,0.008727,-0.999962 };
-const go_type ZM_Banner_H = { 182528,530,253.54,7083.81,36.7728,-0.017453,0,0,0.008727,-0.999962 };
-const go_type ZM_Banner_N = { 182529,530,253.54,7083.81,36.7728,-0.017453,0,0,0.008727,-0.999962 };
+const go_type ZM_Banner_A = { 182527,253.54,7083.81,36.7728,-0.017453,0,0,0.008727,-0.999962 };
+const go_type ZM_Banner_H = { 182528,253.54,7083.81,36.7728,-0.017453,0,0,0.008727,-0.999962 };
+const go_type ZM_Banner_N = { 182529,253.54,7083.81,36.7728,-0.017453,0,0,0.008727,-0.999962 };
 
 // horde field scout spawn data
-const creature_type ZM_HordeFieldScout = {18564,67,530,296.625,7818.4,42.6294,5.18363};
+const creature_type ZM_HordeFieldScout = {18564,67,296.625,7818.4,42.6294,5.18363};
 // alliance field scout spawn data
-const creature_type ZM_AllianceFieldScout = {18581,469,530,374.395,6230.08,22.8351,0.593412};
+const creature_type ZM_AllianceFieldScout = {18581,469,374.395,6230.08,22.8351,0.593412};
 
-enum ZMCreatureTypes{
+enum ZMCreatureTypes
+{
     ZM_ALLIANCE_FIELD_SCOUT = 0,
     ZM_HORDE_FIELD_SCOUT,
     ZM_CREATURE_NUM
@@ -70,7 +71,8 @@ struct zm_beacon {
     uint32 event_leave;
 };
 
-enum ZM_BeaconType{
+enum ZM_BeaconType
+{
     ZM_BEACON_EAST = 0,
     ZM_BEACON_WEST,
     ZM_NUM_BEACONS
@@ -102,46 +104,47 @@ const uint32 ZMBeaconLooseH[ZM_NUM_BEACONS] = {
 };
 
 const go_type ZMCapturePoints[ZM_NUM_BEACONS] = {
-    {182523,530,303.243,6841.36,40.1245,-1.58825,0,0,0.71325,-0.700909},
-    {182522,530,336.466,7340.26,41.4984,-1.58825,0,0,0.71325,-0.700909}
+    {182523,303.243,6841.36,40.1245,-1.58825,0,0,0.71325,-0.700909},
+    {182522,336.466,7340.26,41.4984,-1.58825,0,0,0.71325,-0.700909}
 };
 
 enum OutdoorPvPZMWorldStates
 {
-    ZM_UI_TOWER_SLIDER_N_W = 2529,
-    ZM_UI_TOWER_SLIDER_POS_W = 2528,
-    ZM_UI_TOWER_SLIDER_DISPLAY_W = 2527,
+    ZM_UI_TOWER_SLIDER_N_W      = 2529,
+    ZM_UI_TOWER_SLIDER_POS_W    = 2528,
+    ZM_UI_TOWER_SLIDER_DISPLAY_W= 2527,
 
-    ZM_UI_TOWER_SLIDER_N_E = 2535,
-    ZM_UI_TOWER_SLIDER_POS_E = 2534,
-    ZM_UI_TOWER_SLIDER_DISPLAY_E = 2533,
+    ZM_UI_TOWER_SLIDER_N_E      = 2535,
+    ZM_UI_TOWER_SLIDER_POS_E    = 2534,
+    ZM_UI_TOWER_SLIDER_DISPLAY_E= 2533,
 
-    ZM_WORLDSTATE_UNK_1 = 2653,
+    ZM_WORLDSTATE_UNK_1         = 2653,
 
-    ZM_UI_TOWER_EAST_N = 2560,
-    ZM_UI_TOWER_EAST_H = 2559,
-    ZM_UI_TOWER_EAST_A = 2558,
-    ZM_UI_TOWER_WEST_N = 2557,
-    ZM_UI_TOWER_WEST_H = 2556,
-    ZM_UI_TOWER_WEST_A = 2555,
+    ZM_UI_TOWER_EAST_N          = 2560,
+    ZM_UI_TOWER_EAST_H          = 2559,
+    ZM_UI_TOWER_EAST_A          = 2558,
+    ZM_UI_TOWER_WEST_N          = 2557,
+    ZM_UI_TOWER_WEST_H          = 2556,
+    ZM_UI_TOWER_WEST_A          = 2555,
 
-    ZM_MAP_TOWER_EAST_N = 2652,
-    ZM_MAP_TOWER_EAST_H = 2651,
-    ZM_MAP_TOWER_EAST_A = 2650,
-    ZM_MAP_GRAVEYARD_H = 2649,
-    ZM_MAP_GRAVEYARD_A = 2648,
-    ZM_MAP_GRAVEYARD_N = 2647,
-    ZM_MAP_TOWER_WEST_N = 2646,
-    ZM_MAP_TOWER_WEST_H = 2645,
-    ZM_MAP_TOWER_WEST_A = 2644,
+    ZM_MAP_TOWER_EAST_N         = 2652,
+    ZM_MAP_TOWER_EAST_H         = 2651,
+    ZM_MAP_TOWER_EAST_A         = 2650,
+    ZM_MAP_GRAVEYARD_H          = 2649,
+    ZM_MAP_GRAVEYARD_A          = 2648,
+    ZM_MAP_GRAVEYARD_N          = 2647,
+    ZM_MAP_TOWER_WEST_N         = 2646,
+    ZM_MAP_TOWER_WEST_H         = 2645,
+    ZM_MAP_TOWER_WEST_A         = 2644,
 
-    ZM_MAP_HORDE_FLAG_READY = 2658,
+    ZM_MAP_HORDE_FLAG_READY     = 2658,
     ZM_MAP_HORDE_FLAG_NOT_READY = 2657,
     ZM_MAP_ALLIANCE_FLAG_NOT_READY = 2656,
-    ZM_MAP_ALLIANCE_FLAG_READY = 2655
+    ZM_MAP_ALLIANCE_FLAG_READY  = 2655
 };
 
-enum ZM_TowerStateMask{
+enum ZM_TowerStateMask
+{
     ZM_TOWERSTATE_N = 1,
     ZM_TOWERSTATE_A = 2,
     ZM_TOWERSTATE_H = 4
@@ -166,7 +169,8 @@ class OutdoorPvPObjectiveZM_Beacon : public OutdoorPvPObjective
     uint32 m_TowerState;
 };
 
-enum ZM_GraveYardState{
+enum ZM_GraveYardState
+{
     ZM_GRAVEYARD_N = 1,
     ZM_GRAVEYARD_A = 2,
     ZM_GRAVEYARD_H = 4

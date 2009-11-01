@@ -32,7 +32,7 @@ OutdoorPvPTF::OutdoorPvPTF()
 OutdoorPvPObjectiveTF::OutdoorPvPObjectiveTF(OutdoorPvP *pvp, OutdoorPvPTF_TowerType type)
 : OutdoorPvPObjective(pvp), m_TowerType(type), m_TowerState(TF_TOWERSTATE_N)
 {
-    AddCapturePoint(TFCapturePoints[type].entry,TFCapturePoints[type].map,TFCapturePoints[type].x,TFCapturePoints[type].y,TFCapturePoints[type].z,TFCapturePoints[type].o,TFCapturePoints[type].rot0,TFCapturePoints[type].rot1,TFCapturePoints[type].rot2,TFCapturePoints[type].rot3);
+    AddCapturePoint(TFCapturePoints[type].entry, TFCapturePoints[type].x,TFCapturePoints[type].y,TFCapturePoints[type].z,TFCapturePoints[type].o,TFCapturePoints[type].rot0,TFCapturePoints[type].rot1,TFCapturePoints[type].rot2,TFCapturePoints[type].rot3);
 }
 
 void OutdoorPvPObjectiveTF::FillInitialWorldStates(WorldPacket &data)

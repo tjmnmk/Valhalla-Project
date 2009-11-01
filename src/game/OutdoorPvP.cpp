@@ -72,14 +72,14 @@ void OutdoorPvPObjective::HandlePlayerActivityChanged(Player * plr)
                 c->AI()->MoveInLineOfSight(plr);
 }
 
-bool OutdoorPvPObjective::AddObject(uint32 type, uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3)
+bool OutdoorPvPObjective::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3)
 {
-    Map * pMap = MapManager::Instance().FindMap(map);
-    if (!pMap)
+    Map* map = m_PvP->GetMap();
+    if (!map)
         return false;
 
     GameObject* go = new GameObject;
-    if (!go->Create(objmgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), entry, pMap,
+    if (!go->Create(objmgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), entry, map,
         PHASEMASK_NORMAL, x, y, z, o, rotation0, rotation1, rotation2, rotation3, 100, GO_STATE_READY))
     {
         sLog.outError("OutdoorPvP: Gameobject template %u not found in database.", entry);
@@ -93,14 +93,14 @@ bool OutdoorPvPObjective::AddObject(uint32 type, uint32 entry, uint32 map, float
     return true;
 }
 
-bool OutdoorPvPObjective::AddCreature(uint32 type, uint32 entry, uint32 teamval, uint32 map, float x, float y, float z, float o, uint32 spawntimedelay)
+bool OutdoorPvPObjective::AddCreature(uint32 type, uint32 entry, uint32 teamval, float x, float y, float z, float o, uint32 spawntimedelay)
 {
-    Map * pMap = MapManager::Instance().FindMap(map);
-    if (!pMap)
+    Map* map = m_PvP->GetMap();
+    if (!map)
         return false;
 
     Creature* pCreature = new Creature;
-    if (!pCreature->Create(objmgr.GenerateLowGuid(HIGHGUID_UNIT), pMap, PHASEMASK_NORMAL, entry, teamval))
+    if (!pCreature->Create(objmgr.GenerateLowGuid(HIGHGUID_UNIT), map, PHASEMASK_NORMAL, entry, teamval))
     {
         sLog.outError("OutdoorPvP: Can't create creature entry: %u",entry);
         delete pCreature;
@@ -118,25 +118,25 @@ bool OutdoorPvPObjective::AddCreature(uint32 type, uint32 entry, uint32 teamval,
 
     pCreature->AIM_Initialize();
 
-    if(spawntimedelay)
+    if (spawntimedelay)
         pCreature->SetRespawnDelay(spawntimedelay);
 
     m_Creatures[type] = MAKE_NEW_GUID(pCreature->GetGUID(), entry, HIGHGUID_UNIT);
     m_CreatureTypes[m_Creatures[type]] = type;
 
-    pMap->Add(pCreature);
+    map->Add(pCreature);
 
     return true;
 }
 
-bool OutdoorPvPObjective::AddCapturePoint(uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3)
+bool OutdoorPvPObjective::AddCapturePoint(uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3)
 {
-    Map * pMap = MapManager::Instance().FindMap(map);
-    if(!pMap)
+    Map* map = m_PvP->GetMap();
+    if (!map)
         return false;
 
     GameObject* go = new GameObject;
-    if (!go->Create(objmgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), entry, pMap,
+    if (!go->Create(objmgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT), entry, map,
         PHASEMASK_NORMAL, x, y, z, o, rotation0, rotation1, rotation2, rotation3, 100, GO_STATE_READY))
     {
         sLog.outError("OutdoorPvP: Gameobject template %u not found in database.", entry);
@@ -148,7 +148,7 @@ bool OutdoorPvPObjective::AddCapturePoint(uint32 entry, uint32 map, float x, flo
         go->AddToWorld();
 
     Creature* pCreature = new Creature;
-    if (!pCreature->Create(objmgr.GenerateLowGuid(HIGHGUID_UNIT), pMap,PHASEMASK_NORMAL, OPVP_TRIGGER_CREATURE_ENTRY, 0))
+    if (!pCreature->Create(objmgr.GenerateLowGuid(HIGHGUID_UNIT), map,PHASEMASK_NORMAL, OPVP_TRIGGER_CREATURE_ENTRY, 0))
     {
         sLog.outError("OutdoorPvP: Can't create creature entry: %u",entry);
         delete pCreature;
@@ -165,7 +165,7 @@ bool OutdoorPvPObjective::AddCapturePoint(uint32 entry, uint32 map, float x, flo
 
     pCreature->AIM_Initialize();
 
-    pMap->Add(pCreature);
+    map->Add(pCreature);
 
     m_CapturePointCreature = MAKE_NEW_GUID(pCreature->GetGUID(), OPVP_TRIGGER_CREATURE_ENTRY, HIGHGUID_UNIT);
     m_CapturePoint = MAKE_NEW_GUID(go->GetGUID(), entry, HIGHGUID_GAMEOBJECT);
@@ -188,6 +188,8 @@ bool OutdoorPvPObjective::DelCreature(uint32 type)
     }
 
     Map* map = m_PvP->GetMap();
+    if (!map)
+        return false;
     Creature *cr = map->GetCreature(m_Creatures[type]);
     if (!cr)
     {
@@ -273,7 +275,7 @@ OutdoorPvP::~OutdoorPvP()
 
 void OutdoorPvP::HandlePlayerEnterZone(Player * plr, uint32 zone)
 {
-    if(plr->GetTeam()==ALLIANCE)
+    if (plr->GetTeam()==ALLIANCE)
         m_PlayerGuids[0].insert(plr->GetGUID());
     else
         m_PlayerGuids[1].insert(plr->GetGUID());
@@ -290,7 +292,7 @@ void OutdoorPvP::HandlePlayerLeaveZone(Player * plr, uint32 zone)
     /* if(zone != plr->GetZoneId())
         SendRemoveWorldStates(plr);
     */
-    if(plr->GetTeam()==ALLIANCE)
+    if (plr->GetTeam()==ALLIANCE)
         m_PlayerGuids[0].erase(plr->GetGUID());
     else
         m_PlayerGuids[1].erase(plr->GetGUID());
@@ -308,14 +310,14 @@ bool OutdoorPvP::Update(uint32 diff)
 bool OutdoorPvPObjective::Update(uint32 diff)
 {
     uint32 Challenger = 0;
-    if(m_ShiftTimer<diff)
+    if (m_ShiftTimer < diff)
     {
         m_ShiftTimer = OUTDOORPVP_OBJECTIVE_UPDATE_INTERVAL;
 
         // get the difference of numbers
         float fact_diff = (m_AllianceActivePlayerCount - m_HordeActivePlayerCount);
 
-        if(fact_diff<0)
+        if (fact_diff < 0)
         {
             if(fact_diff < - m_ShiftMaxCaptureSpeed)
                 fact_diff = - m_ShiftMaxCaptureSpeed;

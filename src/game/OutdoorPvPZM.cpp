@@ -37,7 +37,7 @@ OutdoorPvPZM::OutdoorPvPZM()
 OutdoorPvPObjectiveZM_Beacon::OutdoorPvPObjectiveZM_Beacon(OutdoorPvP *pvp, ZM_BeaconType type)
 : OutdoorPvPObjective(pvp), m_TowerType(type), m_TowerState(ZM_TOWERSTATE_N)
 {
-    AddCapturePoint(ZMCapturePoints[type].entry,ZMCapturePoints[type].map,ZMCapturePoints[type].x,ZMCapturePoints[type].y,ZMCapturePoints[type].z,ZMCapturePoints[type].o,ZMCapturePoints[type].rot0,ZMCapturePoints[type].rot1,ZMCapturePoints[type].rot2,ZMCapturePoints[type].rot3);
+    AddCapturePoint(ZMCapturePoints[type].entry, ZMCapturePoints[type].x,ZMCapturePoints[type].y,ZMCapturePoints[type].z,ZMCapturePoints[type].o,ZMCapturePoints[type].rot0,ZMCapturePoints[type].rot1,ZMCapturePoints[type].rot2,ZMCapturePoints[type].rot3);
 }
 
 void OutdoorPvPObjectiveZM_Beacon::FillInitialWorldStates(WorldPacket &data)
@@ -280,7 +280,7 @@ int32 OutdoorPvPObjectiveZM_GraveYard::HandleOpenGo(Player *plr, uint64 guid)
                 sWorld.SendZoneText(ZM_GRAVEYARD_ZONE,objmgr.GetMangosString(LANG_OPVP_ZM_LOOSE_GY_H,-1));
             m_GraveYardState = ZM_GRAVEYARD_A;
             DelObject(0);   // only one gotype is used in the whole outdoor pvp, no need to call it a constant
-            AddObject(0,ZM_Banner_A.entry,ZM_Banner_A.map,ZM_Banner_A.x,ZM_Banner_A.y,ZM_Banner_A.z,ZM_Banner_A.o,ZM_Banner_A.rot0,ZM_Banner_A.rot1,ZM_Banner_A.rot2,ZM_Banner_A.rot3);
+            AddObject(0,ZM_Banner_A.entry, ZM_Banner_A.x,ZM_Banner_A.y,ZM_Banner_A.z,ZM_Banner_A.o,ZM_Banner_A.rot0,ZM_Banner_A.rot1,ZM_Banner_A.rot2,ZM_Banner_A.rot3);
             objmgr.RemoveGraveYardLink(ZM_GRAVEYARD_ID, ZM_GRAVEYARD_ZONE, HORDE);          // rem gy
             objmgr.AddGraveYardLink(ZM_GRAVEYARD_ID, ZM_GRAVEYARD_ZONE, ALLIANCE, false);   // add gy
             ((OutdoorPvPZM*)m_PvP)->BuffTeam(ALLIANCE);
@@ -293,7 +293,7 @@ int32 OutdoorPvPObjectiveZM_GraveYard::HandleOpenGo(Player *plr, uint64 guid)
                 sWorld.SendZoneText(ZM_GRAVEYARD_ZONE,objmgr.GetMangosString(LANG_OPVP_ZM_LOOSE_GY_A,-1));
             m_GraveYardState = ZM_GRAVEYARD_H;
             DelObject(0);   // only one gotype is used in the whole outdoor pvp, no need to call it a constant
-            AddObject(0,ZM_Banner_H.entry,ZM_Banner_H.map,ZM_Banner_H.x,ZM_Banner_H.y,ZM_Banner_H.z,ZM_Banner_H.o,ZM_Banner_H.rot0,ZM_Banner_H.rot1,ZM_Banner_H.rot2,ZM_Banner_H.rot3);
+            AddObject(0,ZM_Banner_H.entry, ZM_Banner_H.x,ZM_Banner_H.y,ZM_Banner_H.z,ZM_Banner_H.o,ZM_Banner_H.rot0,ZM_Banner_H.rot1,ZM_Banner_H.rot2,ZM_Banner_H.rot3);
             objmgr.RemoveGraveYardLink(ZM_GRAVEYARD_ID, ZM_GRAVEYARD_ZONE, ALLIANCE);          // rem gy
             objmgr.AddGraveYardLink(ZM_GRAVEYARD_ID, ZM_GRAVEYARD_ZONE, HORDE, false);   // add gy
             ((OutdoorPvPZM*)m_PvP)->BuffTeam(HORDE);
@@ -312,10 +312,10 @@ OutdoorPvPObjectiveZM_GraveYard::OutdoorPvPObjectiveZM_GraveYard(OutdoorPvP *pvp
     m_GraveYardState = ZM_GRAVEYARD_N;
     m_FlagCarrierGUID = 0;
     // add field scouts here
-    AddCreature(ZM_ALLIANCE_FIELD_SCOUT,ZM_AllianceFieldScout.entry,ZM_AllianceFieldScout.teamval,ZM_AllianceFieldScout.map,ZM_AllianceFieldScout.x,ZM_AllianceFieldScout.y,ZM_AllianceFieldScout.z,ZM_AllianceFieldScout.o);
-    AddCreature(ZM_HORDE_FIELD_SCOUT,ZM_HordeFieldScout.entry,ZM_HordeFieldScout.teamval,ZM_HordeFieldScout.map,ZM_HordeFieldScout.x,ZM_HordeFieldScout.y,ZM_HordeFieldScout.z,ZM_HordeFieldScout.o);
+    AddCreature(ZM_ALLIANCE_FIELD_SCOUT,ZM_AllianceFieldScout.entry,ZM_AllianceFieldScout.teamval, ZM_AllianceFieldScout.x,ZM_AllianceFieldScout.y,ZM_AllianceFieldScout.z,ZM_AllianceFieldScout.o);
+    AddCreature(ZM_HORDE_FIELD_SCOUT,ZM_HordeFieldScout.entry,ZM_HordeFieldScout.teamval, ZM_HordeFieldScout.x,ZM_HordeFieldScout.y,ZM_HordeFieldScout.z,ZM_HordeFieldScout.o);
     // add neutral banner
-    AddObject(0,ZM_Banner_N.entry,ZM_Banner_N.map,ZM_Banner_N.x,ZM_Banner_N.y,ZM_Banner_N.z,ZM_Banner_N.o,ZM_Banner_N.rot0,ZM_Banner_N.rot1,ZM_Banner_N.rot2,ZM_Banner_N.rot3);
+    AddObject(0,ZM_Banner_N.entry, ZM_Banner_N.x,ZM_Banner_N.y,ZM_Banner_N.z,ZM_Banner_N.o,ZM_Banner_N.rot0,ZM_Banner_N.rot1,ZM_Banner_N.rot2,ZM_Banner_N.rot3);
 }
 
 void OutdoorPvPObjectiveZM_GraveYard::UpdateTowerState()

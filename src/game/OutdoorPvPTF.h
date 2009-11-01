@@ -36,7 +36,8 @@ const uint32 TF_CAPTURE_BUFF = 33377;
 const uint32 TF_ALLY_QUEST = 11505;
 const uint32 TF_HORDE_QUEST = 11506;
 
-enum OutdoorPvPTF_TowerType{
+enum OutdoorPvPTF_TowerType
+{
     TF_TOWER_NW = 0,
     TF_TOWER_N,
     TF_TOWER_NE,
@@ -46,19 +47,21 @@ enum OutdoorPvPTF_TowerType{
 };
 
 const go_type TFCapturePoints[TF_TOWER_NUM] = {
-    {183104,530,-3081.65,5335.03,17.1853,-2.14675,0,0,0.878817,-0.477159},
-    {183411,530,-2939.9,4788.73,18.987,2.77507,0,0,0.983255,0.182236},
-    {183412,530,-3174.94,4440.97,16.2281,1.86750,0,0.803857,0.594823},
-    {183413,530,-3603.31,4529.15,20.9077,0.994838,0,0,0.477159,0.878817},
-    {183414,530,-3812.37,4899.3,17.7249,0.087266,0,0,0.043619,0.999048}
+    {183104,-3081.65,5335.03,17.1853,-2.14675,0,0,0.878817,-0.477159},
+    {183411,-2939.9,4788.73,18.987,2.77507,0,0,0.983255,0.182236},
+    {183412,-3174.94,4440.97,16.2281,1.86750,0,0.803857,0.594823},
+    {183413,-3603.31,4529.15,20.9077,0.994838,0,0,0.477159,0.878817},
+    {183414,-3812.37,4899.3,17.7249,0.087266,0,0,0.043619,0.999048}
 };
 
-struct tf_tower_world_state{
+struct tf_tower_world_state
+{
     uint32 n;
     uint32 h;
     uint32 a;
 };
 
+// TODO use decimals
 const tf_tower_world_state TFTowerWorldStates[TF_TOWER_NUM] = {
     {0xa79,0xa7a,0xa7b},
     {0xa7e,0xa7d,0xa7c},
@@ -71,7 +74,9 @@ const uint32 TFTowerPlayerEnterEvents[TF_TOWER_NUM] = {12226, 12497, 12486, 1249
 
 const uint32 TFTowerPlayerLeaveEvents[TF_TOWER_NUM] = {12225, 12496, 12487, 12498, 12500};
 
-enum TFWorldStates{
+// TODO use decimals
+enum TFWorldStates
+{
     TF_UI_TOWER_SLIDER_POS = 0xa41,
     TF_UI_TOWER_SLIDER_N = 0xa40,
     TF_UI_TOWER_SLIDER_DISPLAY = 0xa3f,
@@ -88,7 +93,8 @@ enum TFWorldStates{
     TF_UI_LOCKED_DISPLAY_ALLIANCE = 0xacf
 };
 
-enum TFTowerStates {
+enum TFTowerStates
+{
     TF_TOWERSTATE_N = 1,
     TF_TOWERSTATE_H = 2,
     TF_TOWERSTATE_A = 4

@@ -33,7 +33,8 @@ const uint32 AlliancePlayerKillReward = 32155;
 
 const uint32 HordePlayerKillReward = 32158;
 
-enum OutdoorPvPHPTowerType{
+enum OutdoorPvPHPTowerType
+{
     HP_TOWER_BROKEN_HILL = 0,
     HP_TOWER_OVERLOOK = 1,
     HP_TOWER_STADIUM = 2,
@@ -46,7 +47,8 @@ const uint32 HP_CapturePointEvent_Enter[HP_TOWER_NUM] = {11404,11396,11388};
 
 const uint32 HP_CapturePointEvent_Leave[HP_TOWER_NUM] = {11403,11395,11387};
 
-enum OutdoorPvPHPWorldStates{
+enum OutdoorPvPHPWorldStates
+{
     HP_UI_TOWER_DISPLAY_A = 0x9ba,
     HP_UI_TOWER_DISPLAY_H = 0x9b9,
 
@@ -71,15 +73,15 @@ const uint8 HP_TowerArtKit_H[HP_TOWER_NUM] = {64,61,68};
 const uint8 HP_TowerArtKit_N[HP_TOWER_NUM] = {66,63,69};
 
 const go_type HPCapturePoints[HP_TOWER_NUM] = {
-    {182175,530,-471.462,3451.09,34.6432,0.174533,0,0,0.087156,0.996195},      // 0 - Broken Hill
-    {182174,530,-184.889,3476.93,38.205,-0.017453,0,0,0.008727,-0.999962},     // 1 - Overlook
-    {182173,530,-290.016,3702.42,56.6729,0.034907,0,0,0.017452,0.999848}     // 2 - Stadium
+    {182175, -471.462,3451.09,34.6432,0.174533,0,0,0.087156,0.996195},      // 0 - Broken Hill
+    {182174, -184.889,3476.93,38.205,-0.017453,0,0,0.008727,-0.999962},     // 1 - Overlook
+    {182173, -290.016,3702.42,56.6729,0.034907,0,0,0.017452,0.999848}     // 2 - Stadium
 };
 
 const go_type HPTowerFlags[HP_TOWER_NUM] = {
-    {183514,530,-467.078,3528.17,64.7121,3.14159,0,0,1,0},  // 0 broken hill
-    {182525,530,-187.887,3459.38,60.0403,-3.12414,0,0,0.999962,-0.008727}, // 1 overlook
-    {183515,530,-289.610,3696.83,75.9447,3.12414,0,0,0.999962,0.008727} // 2 stadium
+    {183514, -467.078,3528.17,64.7121,3.14159,0,0,1,0},  // 0 broken hill
+    {182525, -187.887,3459.38,60.0403,-3.12414,0,0,0.999962,-0.008727}, // 1 overlook
+    {183515, -289.610,3696.83,75.9447,3.12414,0,0,0.999962,0.008727} // 2 stadium
 };
 
 class OutdoorPvPObjectiveHP : public OutdoorPvPObjective

@@ -41,7 +41,6 @@ OutdoorPvPObjectiveHP::OutdoorPvPObjectiveHP(OutdoorPvP *pvp,OutdoorPvPHPTowerTy
 : OutdoorPvPObjective(pvp), m_TowerType(type)
 {
     AddCapturePoint(HPCapturePoints[type].entry,
-            HPCapturePoints[type].map,
             HPCapturePoints[type].x,
             HPCapturePoints[type].y,
             HPCapturePoints[type].z,
@@ -52,7 +51,6 @@ OutdoorPvPObjectiveHP::OutdoorPvPObjectiveHP(OutdoorPvP *pvp,OutdoorPvPHPTowerTy
             HPCapturePoints[type].rot3);
     AddObject(type,
             HPTowerFlags[type].entry,
-            HPTowerFlags[type].map,
             HPTowerFlags[type].x,
             HPTowerFlags[type].y,
             HPTowerFlags[type].z,

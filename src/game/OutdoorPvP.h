@@ -30,7 +30,8 @@
 
 class Map;
 
-enum ObjectiveStates{
+enum ObjectiveStates
+{
     OBJECTIVESTATE_NEUTRAL = 0,
     OBJECTIVESTATE_ALLIANCE = 1,
     OBJECTIVESTATE_HORDE = 2,
@@ -40,7 +41,8 @@ enum ObjectiveStates{
     OBJECTIVESTATE_HORDE_ALLIANCE_CHALLENGE = 6
 };
 
-enum OutdoorPvPTypes{
+enum OutdoorPvPTypes
+{
     OUTDOOR_PVP_HP = 1,
     OUTDOOR_PVP_NA = 2,
     OUTDOOR_PVP_TF = 3,
@@ -53,7 +55,6 @@ enum OutdoorPvPTypes{
 // struct for go spawning
 struct go_type{
     uint32 entry;
-    uint32 map;
     float x;
     float y;
     float z;
@@ -68,7 +69,6 @@ struct go_type{
 struct creature_type{
     uint32 entry;
     uint32 teamval;
-    uint32 map;
     float x;
     float y;
     float z;
@@ -133,9 +133,9 @@ class OutdoorPvPObjective
         void DeleteSpawns();
     protected:
 
-        bool AddCapturePoint(uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
-        bool AddObject(uint32 type, uint32 entry, uint32 map, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
-        bool AddCreature(uint32 type, uint32 entry, uint32 teamval, uint32 map, float x, float y, float z, float o, uint32 spawntimedelay = 0);
+        bool AddCapturePoint(uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
+        bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3);
+        bool AddCreature(uint32 type, uint32 entry, uint32 teamval, float x, float y, float z, float o, uint32 spawntimedelay = 0);
 
         bool DelCreature(uint32 type);
         bool DelObject(uint32 type);

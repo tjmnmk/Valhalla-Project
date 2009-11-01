@@ -128,15 +128,11 @@ void OutdoorPvPNA::BuffTeam(uint32 team)
 
 void OutdoorPvPObjectiveNA::SpawnNPCsForTeam(uint32 team)
 {
-    const creature_type * creatures = NULL;
-    if(team == ALLIANCE)
-        creatures=AllianceControlNPCs;
-    else if(team == HORDE)
-        creatures=HordeControlNPCs;
-    else
+    if (team != ALLIANCE && team != HORDE)
         return;
+    const creature_type * creatures = (team == ALLIANCE) ? AllianceControlNPCs : HordeControlNPCs;
     for(int i = 0; i < NA_CONTROL_NPC_NUM; ++i)
-        AddCreature(i,creatures[i].entry,creatures[i].teamval,creatures[i].map,creatures[i].x,creatures[i].y,creatures[i].z,creatures[i].o,1000000);
+        AddCreature(i, creatures[i].entry, creatures[i].teamval, creatures[i].x, creatures[i].y, creatures[i].z, creatures[i].o, 1000000);
 }
 
 void OutdoorPvPObjectiveNA::DeSpawnNPCs()
@@ -147,34 +143,31 @@ void OutdoorPvPObjectiveNA::DeSpawnNPCs()
 
 void OutdoorPvPObjectiveNA::SpawnGOsForTeam(uint32 team)
 {
-    const go_type * gos = NULL;
-    if(team == ALLIANCE)
-        gos=AllianceControlGOs;
-    else if(team == HORDE)
-        gos=HordeControlGOs;
-    else
+    if (team != ALLIANCE && team != HORDE)
         return;
+    const go_type * gos = (team == ALLIANCE) ? AllianceControlGOs : HordeControlGOs;
     for(int i = 0; i < NA_CONTROL_GO_NUM; ++i)
     {
-        if( i == NA_ROOST_S ||
-                i == NA_ROOST_W ||
-                i == NA_ROOST_N ||
-                i == NA_ROOST_E ||
-                i == NA_BOMB_WAGON_S ||
-                i == NA_BOMB_WAGON_W ||
-                i == NA_BOMB_WAGON_N ||
-                i == NA_BOMB_WAGON_E )
+        switch(i)
+        {
+            case NA_ROOST_S:
+            case NA_ROOST_W:
+            case NA_ROOST_N:
+            case NA_ROOST_E:
+            case NA_BOMB_WAGON_S:
+            case NA_BOMB_WAGON_W:
+            case NA_BOMB_WAGON_N:
+            case NA_BOMB_WAGON_E:
             continue;   // roosts and bomb wagons are spawned when someone uses the matching destroyed roost
-        AddObject(i,gos[i].entry,gos[i].map,gos[i].x,gos[i].y,gos[i].z,gos[i].o,gos[i].rot0,gos[i].rot1,gos[i].rot2,gos[i].rot3);
+        }
+        AddObject(i, gos[i].entry, gos[i].x, gos[i].y, gos[i].z, gos[i].o, gos[i].rot0, gos[i].rot1, gos[i].rot2, gos[i].rot3);
     }
 }
 
 void OutdoorPvPObjectiveNA::DeSpawnGOs()
 {
     for(int i = 0; i < NA_CONTROL_GO_NUM; ++i)
-    {
         DelObject(i);
-    }
 }
 
 void OutdoorPvPObjectiveNA::FactionTakeOver(uint32 team)
@@ -245,14 +238,14 @@ OutdoorPvPObjectiveNA::OutdoorPvPObjectiveNA(OutdoorPvP *pvp) :
     m_HalaaState(HALAA_N), m_WyvernStateSouth(0), m_WyvernStateNorth(0), m_WyvernStateWest(0),
     m_WyvernStateEast(0), m_RespawnTimer(NA_RESPAWN_TIME), m_GuardCheckTimer(NA_GUARD_CHECK_TIME)
 {
-    AddCapturePoint(182210,530,-1572.57,7945.3,-22.475,2.05949,0,0,0.857167,0.515038);
+    AddCapturePoint(182210, -1572.57,7945.3,-22.475,2.05949,0,0,0.857167,0.515038);
 }
 
 bool OutdoorPvPNA::SetupOutdoorPvP()
 {
     //    m_TypeId = OUTDOOR_PVP_NA; _MUST_ be set in ctor, because of spawns cleanup
     // add the zones affected by the pvp buff
-    sOutdoorPvPMgr.AddZone(NA_BUFF_ZONE,this);
+    sOutdoorPvPMgr.AddZone(NA_BUFF_ZONE, this);
 
     // halaa
     m_obj = new OutdoorPvPObjectiveNA(this);
@@ -559,10 +552,10 @@ int32 OutdoorPvPObjectiveNA::HandleOpenGo(Player *plr, uint64 guid)
             DelObject(del2);
 
         if(add>-1)
-            AddObject(add,gos[add].entry,gos[add].map,gos[add].x,gos[add].y,gos[add].z,gos[add].o,gos[add].rot0,gos[add].rot1,gos[add].rot2,gos[add].rot3);
+            AddObject(add,gos[add].entry, gos[add].x,gos[add].y,gos[add].z,gos[add].o,gos[add].rot0,gos[add].rot1,gos[add].rot2,gos[add].rot3);
 
         if(add2>-1)
-            AddObject(add2,gos[add2].entry,gos[add2].map,gos[add2].x,gos[add2].y,gos[add2].z,gos[add2].o,gos[add2].rot0,gos[add2].rot1,gos[add2].rot2,gos[add2].rot3);
+            AddObject(add2,gos[add2].entry, gos[add2].x,gos[add2].y,gos[add2].z,gos[add2].o,gos[add2].rot0,gos[add2].rot1,gos[add2].rot2,gos[add2].rot3);
 
         return retval;
     }
