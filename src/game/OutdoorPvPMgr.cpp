@@ -26,6 +26,7 @@
 #include "OutdoorPvPLA.h"
 #include "Player.h"
 #include "World.h"
+#include "MapManager.h"
 #include "Policies/SingletonImp.h"
 
 INSTANTIATE_SINGLETON_1( OutdoorPvPMgr );
@@ -61,22 +62,30 @@ void OutdoorPvPMgr::CreateOutdoorPvP(uint32 typeId, uint32 mapId)
         sLog.outDebug("OutdoorPvPMgr: init failed for %i.", typeId);
         return;
     }
-    if(!pOP->SetupOutdoorPvP())
+
+    if (!sMapStore.LookupEntry(mapId))
     {
-        sLog.outDebug("OutdoorPvPMgr: SetupOutdoorPvP failed for %i.", typeId);
+        sLog.outError("OutdoorPvPMgr: init not successfull for %i cause of unknown map.", typeId);
         delete pOP;
         return;
     }
+
     pOP->SetTypeId(typeId);
     pOP->SetMapId(mapId);
 
-    if (sMapStore.LookupEntry(mapId))
+    sLog.outDebug("OutdoorPvPMgr: init successfull for %i.", typeId);
+
+    // setting map here is only important for spawning our creatures through the
+    // script.. if later all spawns are moved in db, we maybe can get rid of
+    // this setmap
+    pOP->SetMap(MapManager::Instance().CreateMap(mapId, NULL));
+
+    if(!pOP->SetupOutdoorPvP())
     {
-        m_OutdoorPvPSet.insert(pOP);
-        sLog.outDebug("OutdoorPvPMgr: init successfull for %i.", typeId);
+        sLog.outError("OutdoorPvPMgr: SetupOutdoorPvP failed for %i.", typeId);
+        delete pOP;
+        return;
     }
-    else
-        sLog.outError("OutdoorPvPMgr: init not successfull for %i cause of unknown map.", typeId);
 }
 
 void OutdoorPvPMgr::InitOutdoorPvP()
@@ -101,23 +110,6 @@ OutdoorPvP* OutdoorPvPMgr::GetOutdoorPvPToZoneId(uint32 zoneid)
     if(itr == m_OutdoorPvPMap.end())
         return NULL;
     return itr->second;
-}
-
-void OutdoorPvPMgr::NotifyMapAdded(Map* map)
-{
-    // World maps only - it's outdoor after all.
-    if (map->Instanceable())
-        return;
-
-    for(OutdoorPvPSet::iterator itr = m_OutdoorPvPSet.begin(); itr != m_OutdoorPvPSet.end(); ++itr)
-    {
-        OutdoorPvP* opvp = *itr;
-        if (!opvp->GetMap() && opvp->GetMapId() == map->GetId())
-        {
-            opvp->SetMap(map);
-            map->AddOutdoorPvP(opvp, opvp->GetTypeId());
-        }
-    }
 }
 
 bool OutdoorPvPMgr::HandleCustomSpell(Player *plr, uint32 spellId, GameObject * go)

@@ -225,8 +225,6 @@ Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _par
 
     //lets initialize visibility distance for map
     Map::InitVisibilityDistance();
-    // adds the mappointer to an outdoorpvp-class
-    sOutdoorPvPMgr.NotifyMapAdded(this);
 }
 
 void Map::InitVisibilityDistance()

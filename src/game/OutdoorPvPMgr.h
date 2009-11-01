@@ -43,9 +43,9 @@ class OutdoorPvPMgr
         void AddZone(uint32 zoneid, OutdoorPvP * handle);
         OutdoorPvP* GetOutdoorPvPToZoneId(uint32 zoneid);
 
-        // called from constructor of map.. can set the mappointer to
-        // an outdoor-class
-        void NotifyMapAdded(Map* map);
+        // will be called from constructor/destructor of opvp class
+        void AddOPvP(OutdoorPvP* opvp) { m_OutdoorPvPSet.insert(opvp); }
+        void DelOPvP(OutdoorPvP* opvp) { m_OutdoorPvPSet.erase(opvp); }
 
         typedef std::set<OutdoorPvP*> OutdoorPvPSet;
         typedef std::map<uint32 /* zoneid */, OutdoorPvP*> OutdoorPvPMap;

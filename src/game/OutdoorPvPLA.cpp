@@ -34,5 +34,5 @@ OutdoorPvPLA::~OutdoorPvPLA()
 
 bool OutdoorPvPLA::SetupOutdoorPvP()
 {
-    return true;
+    return false;
 }

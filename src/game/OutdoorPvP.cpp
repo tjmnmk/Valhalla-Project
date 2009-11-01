@@ -266,11 +266,14 @@ void OutdoorPvP::DeleteSpawns()
 OutdoorPvP::OutdoorPvP()
 : m_Map(NULL)
 {
+    sOutdoorPvPMgr.AddOPvP(this);
 }
 
 OutdoorPvP::~OutdoorPvP()
 {
     DeleteSpawns();
+    GetMap()->DelOutdoorPvP(GetTypeId());
+    sOutdoorPvPMgr.DelOPvP(this);
 }
 
 void OutdoorPvP::HandlePlayerEnterZone(Player * plr, uint32 zone)
