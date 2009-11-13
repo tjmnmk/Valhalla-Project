@@ -3617,11 +3617,11 @@ bool Player::resetTalents(bool no_cost)
     */
 
 
-    if(m_canTitanGrip)
+    if(CanTitanGrip())
     {
-        m_canTitanGrip = false;
-        if(sWorld.getConfig(CONFIG_OFFHAND_CHECK_AT_TALENTS_RESET))
-            AutoUnequipOffhandIfNeed();
+        SetCanTitanGrip(false);
+        AutoUnequipOffhandIfNeed();
+        RemoveAurasDueToSpellByCancel(49152);
     }
 
     return true;
@@ -6360,6 +6360,10 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
 
     // check some item equip limitations (in result lost CanTitanGrip at talent reset, for example)
     AutoUnequipOffhandIfNeed();
+    if (!HasAura(49152) && IsTwoHandUsedInDualWield() && CanTitanGrip())
+    {
+        CastSpell(this, 49152, true);
+    }
 
     // recent client version not send leave/join channel packets for built-in local channels
     UpdateLocalChannels( newZone );
@@ -10562,6 +10566,16 @@ Item* Player::EquipItem( uint16 pos, Item *pItem, bool update )
     // only for full equip instead adding to stack
     GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, pItem->GetEntry());
 
+    // titans grip dmg penalty for 2h weapons
+    ItemPrototype const *pProto = pItem->GetProto();
+    uint32 type = pProto->InventoryType;
+    if (!HasAura(49152))
+    {
+        if (type == INVTYPE_2HWEAPON && CanTitanGrip())
+        {
+            CastSpell(this,49152,true);
+        }
+    }
     return pItem;
 }
 
@@ -10701,6 +10715,19 @@ void Player::RemoveItem( uint8 bag, uint8 slot, bool update )
         pItem->SetSlot( NULL_SLOT );
         if( IsInWorld() && update )
             pItem->SendCreateUpdateToPlayer( this );
+    }
+    // titans grip dmg penalty for 2h weapons removed if player does not have any
+    ItemPrototype const *pProto = pItem->GetProto();
+    uint32 type = pProto->InventoryType;
+    if (HasAura(49152))
+    {
+        if (type == INVTYPE_2HWEAPON)
+        {
+            if (!IsTwoHandUsedInDualWield())
+            {
+                RemoveAurasDueToSpellByCancel(49152);
+            }
+        }
     }
 }
 
@@ -18305,7 +18332,8 @@ void Player::SendInitialPacketsAfterAddToMap()
     {
         SPELL_AURA_MOD_FEAR,     SPELL_AURA_TRANSFORM,                 SPELL_AURA_WATER_WALK,
         SPELL_AURA_FEATHER_FALL, SPELL_AURA_HOVER,                     SPELL_AURA_SAFE_FALL,
-        SPELL_AURA_FLY,          SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED, SPELL_AURA_NONE
+        SPELL_AURA_FLY,          SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED, SPELL_AURA_IGNORE_UNIT_STATE,
+        SPELL_AURA_NONE
     };
     for(AuraType const* itr = &auratypes[0]; itr && itr[0] != SPELL_AURA_NONE; ++itr)
     {
@@ -18329,6 +18357,25 @@ void Player::SendInitialPacketsAfterAddToMap()
     SendAurasForTarget(this);
     SendEnchantmentDurations();                             // must be after add to map
     SendItemDurations();                                    // must be after add to map
+	
+	// Juggernaut & Warbringer both need special packet
+    // for alowing charge in combat and Warbringer
+    // for alowing charge in different stances, too
+    if(HasAura(64976) || HasAura(57499))
+    {
+        WorldPacket aura_update(SMSG_AURA_UPDATE);
+        aura_update.append(GetPackGUID());
+        aura_update << uint8(255);
+        if(HasAura(64976))
+            aura_update << uint32(64976);
+        if(HasAura(57499))
+            aura_update << uint32(57499);
+        aura_update << uint8(19);
+        aura_update << uint8(getLevel());
+        aura_update << uint8(1);
+        aura_update << uint8(0);
+        GetSession()->SendPacket(&aura_update);
+	}
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
@@ -18848,7 +18895,7 @@ void Player::AutoUnequipOffhandIfNeed()
         return;
 
     // need unequip offhand for 2h-weapon without TitanGrip (in any from hands)
-    if (CanTitanGrip() || (offItem->GetProto()->InventoryType != INVTYPE_2HWEAPON && !IsTwoHandUsed()))
+    if (CanTitanGrip() || offItem->GetProto()->InventoryType != INVTYPE_2HWEAPON)
         return;
 
     ItemPosCountVec off_dest;

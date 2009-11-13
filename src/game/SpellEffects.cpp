@@ -154,7 +154,7 @@ pEffect SpellEffects[TOTAL_SPELL_EFFECTS]=
     &Spell::EffectSelfResurrect,                            // 94 SPELL_EFFECT_SELF_RESURRECT
     &Spell::EffectSkinning,                                 // 95 SPELL_EFFECT_SKINNING
     &Spell::EffectCharge,                                   // 96 SPELL_EFFECT_CHARGE
-    &Spell::EffectUnused,                                   // 97 SPELL_EFFECT_97
+    &Spell::EffectCastButtons,                              // 97 SPELL_EFFECT_CAST_BUTTON (totem bar since 3.2.2a)
     &Spell::EffectKnockBack,                                // 98 SPELL_EFFECT_KNOCK_BACK
     &Spell::EffectDisEnchant,                               // 99 SPELL_EFFECT_DISENCHANT
     &Spell::EffectInebriate,                                //100 SPELL_EFFECT_INEBRIATE
@@ -1390,6 +1390,10 @@ void Spell::EffectDummy(uint32 i)
             {
                 int32 chargeBasePoints0 = damage;
                 m_caster->CastCustomSpell(m_caster, 34846, &chargeBasePoints0, NULL, NULL, true);
+
+                //Juggernaut crit bonus
+                if(m_caster->HasAura(64976, 0))
+                    m_caster->CastSpell(m_caster, 65156, true);                                        
                 return;
             }
             // Execute
@@ -1399,6 +1403,17 @@ void Spell::EffectDummy(uint32 i)
                     return;
 
                 uint32 rage = m_caster->GetPower(POWER_RAGE);
+                uint32 rage2 = rage;
+                uint32 lastrage=0;
+                //Sudden Death
+                if(m_caster->HasAura(52437))
+                {
+                    if(m_caster->HasAura(29723)) lastrage=30;
+                    else if (m_caster->HasAura(29725)) lastrage=70;
+                    else if (m_caster->HasAura(29724)) lastrage=100;
+                    rage2 = rage2 - 300;
+                    rage2 = rage2<lastrage?lastrage:rage2;
+                 }
                 // Glyph of Execution bonus
                 if (Aura *aura = m_caster->GetDummyAura(58367))
                     rage+=aura->GetModifier()->m_amount;
@@ -1406,7 +1421,11 @@ void Spell::EffectDummy(uint32 i)
                 int32 basePoints0 = damage+int32(rage * m_spellInfo->DmgMultiplier[i] +
                                                  m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.2f);
                 m_caster->CastCustomSpell(unitTarget, 20647, &basePoints0, NULL, NULL, true, 0);
-                m_caster->SetPower(POWER_RAGE, 0);
+                //Sudden Death
+                if (lastrage != 0)
+                     m_caster->SetPower(POWER_RAGE,rage2);
+                else
+                     m_caster->SetPower(POWER_RAGE,0);
                 return;
             }
             // Slam
@@ -6259,6 +6278,11 @@ void Spell::EffectCharge(uint32 /*i*/)
     // not all charge effects used in negative spells
     if (unitTarget != m_caster && !IsPositiveSpell(m_spellInfo->Id))
         m_caster->Attack(unitTarget,true);
+
+    //Warbringer - remove movement imparing effects
+    if(m_caster->HasAura(57499))
+        m_caster->RemoveAurasAtMechanicImmunity(IMMUNE_TO_ROOT_AND_SNARE_MASK,57499,true);
+
 }
 
 void Spell::EffectCharge2(uint32 /*i*/)
@@ -6916,6 +6940,14 @@ void Spell::EffectTitanGrip(uint32 /*eff_idx*/)
 {
     if (unitTarget && unitTarget->GetTypeId() == TYPEID_PLAYER)
         ((Player*)unitTarget)->SetCanTitanGrip(true);
+    // titans grip dmg penalty for 2h weapons
+    if (!unitTarget->HasAura(49152))
+    {
+        if(((Player*)unitTarget)->IsTwoHandUsedInDualWield())
+        {
+            unitTarget->CastSpell(unitTarget, 49152, true);
+        }
+    }
 }
 
 void Spell::EffectRenamePet(uint32 /*eff_idx*/)
@@ -6943,4 +6975,22 @@ void Spell::EffectPlayMusic(uint32 i)
     WorldPacket data(SMSG_PLAY_MUSIC, 4);
     data << uint32(soundid);
     ((Player*)unitTarget)->GetSession()->SendPacket(&data);
+}
+
+void Spell::EffectCastButtons(uint32 i)
+{
+    if (!unitTarget || m_caster->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    Player *p_caster = (Player*)m_caster;
+    uint32 button_id = m_spellInfo->EffectMiscValue[i] + 132;
+    uint32 n_buttons = m_spellInfo->EffectMiscValueB[i];
+
+    for (; n_buttons; n_buttons--, button_id++)
+    {
+        uint32 spell_id = p_caster->GetActionButtonSpell(button_id);
+        if (!spell_id)
+            continue;
+        p_caster->CastSpell(unitTarget, spell_id, true);
+    }
 }
