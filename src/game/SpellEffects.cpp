@@ -4926,6 +4926,10 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 {
     // TODO: we must implement hunter pet summon at login there (spell 6962)
 
+    // Guarded by the light
+    if (m_spellInfo->Id == 63521 && m_caster && m_caster->HasAura( 54428 ) )
+        m_caster->GetAura( 54428, 0 )->RefreshAura();
+
     switch(m_spellInfo->SpellFamilyName)
     {
         case SPELLFAMILY_GENERIC:

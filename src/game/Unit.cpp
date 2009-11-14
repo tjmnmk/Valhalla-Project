@@ -5196,7 +5196,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return true;                        // charge counting (will removed)
                     }
 
-                    CastSpell(this, 28682, true, castItem, triggeredByAura);
+                    CastSpell(this, 11129, true, castItem, triggeredByAura);
                     return (procEx & PROC_EX_CRITICAL_HIT); // charge update only at crit hits, no hidden cooldowns
                 }
                 // Glyph of Ice Block
