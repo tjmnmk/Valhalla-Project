@@ -33,6 +33,7 @@
 #include "GameSystem/GridRefManager.h"
 #include "MapRefManager.h"
 #include "Utilities/TypeList.h"
+#include "OutdoorPvP.h"
 
 #include <bitset>
 #include <list>
@@ -427,6 +428,10 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
 
         void RemoveFromActive(Creature* obj);
 
+        OutdoorPvP* GetOutdoorPvP(uint32 typeId) { return (m_OutdoorPvP.find(typeId) != m_OutdoorPvP.end()) ? m_OutdoorPvP[typeId] : NULL; }
+        void AddOutdoorPvP(OutdoorPvP* pvp, uint32 typeId) { m_OutdoorPvP[typeId] = pvp; }
+        void DelOutdoorPvP(uint32 typeId) { m_OutdoorPvP.erase(typeId);; }
+
         Creature* GetCreature(uint64 guid);
         Vehicle* GetVehicle(uint64 guid);
         Pet* GetPet(uint64 guid);
@@ -528,6 +533,8 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
         NGridType* i_grids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
         GridMap *GridMaps[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
         std::bitset<TOTAL_NUMBER_OF_CELLS_PER_MAP*TOTAL_NUMBER_OF_CELLS_PER_MAP> marked_cells;
+
+        std::map<uint32, OutdoorPvP*> m_OutdoorPvP;         // TODO: maybe std::list is enough
 
         std::set<WorldObject *> i_objectsToRemove;
         std::multimap<time_t, ScriptAction> m_scriptSchedule;

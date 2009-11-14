@@ -55,7 +55,8 @@ enum Gossip_Option
     GOSSIP_OPTION_STABLEPET         = 14,                   //UNIT_NPC_FLAG_STABLE            = 8192,
     GOSSIP_OPTION_ARMORER           = 15,                   //UNIT_NPC_FLAG_ARMORER           = 16384,
     GOSSIP_OPTION_UNLEARNTALENTS    = 16,                   //UNIT_NPC_FLAG_TRAINER (bonus option for GOSSIP_OPTION_TRAINER)
-    GOSSIP_OPTION_UNLEARNPETSKILLS  = 17                    //UNIT_NPC_FLAG_TRAINER (bonus option for GOSSIP_OPTION_TRAINER)
+    GOSSIP_OPTION_UNLEARNPETSKILLS  = 17,                   //UNIT_NPC_FLAG_TRAINER (bonus option for GOSSIP_OPTION_TRAINER)
+    GOSSIP_OPTION_OUTDOORPVP        = 18                    //UNIT_NPC_FLAG_OUTDOORPVP (option for outdoor pvp creatures)
 };
 
 enum Gossip_Guard
@@ -742,7 +743,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         float CombatStartZ;
     private:
         GridReference<Creature> m_gridRef;
-        CreatureInfo const* m_creatureInfo;                 // in difficulty mode > 0 can different from ObjMgr::GetCreatureTemplate(GetEntry())
+        CreatureInfo const* m_creatureInfo;                 // in difficulty mode > 0 can different from sObjectMgr::GetCreatureTemplate(GetEntry())
         bool m_isActiveObject;
         MonsterMovementFlags m_monsterMoveFlags;
 };
