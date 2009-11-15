@@ -4709,6 +4709,19 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                 }
                 break;
             }
+            case SPELLFAMILY_PALADIN:
+            {
+                // Holy Vengeance, Blood Corruption
+                if ( m_spellProto->Id == 31803 || m_spellProto->Id == 53742 )
+                {
+                    int32 ap = int32(caster->GetTotalAttackPowerValue(BASE_ATTACK));
+                    int32 holy = int32(caster->SpellBaseDamageBonus( GetSpellSchoolMask( m_spellProto ) ) + 
+                        caster->SpellBaseDamageBonusForVictim( GetSpellSchoolMask( m_spellProto ), GetTarget() ) );
+                    m_modifier.m_amount = int32( GetStackAmount() * 6 * ( holy * 13/1000 + ap * 25/1000 ) / 5 );
+                   return;
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -6247,7 +6260,13 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                     if (m_spellProto->SpellFamilyFlags & UI64LIT(0x0008000000000000))
                     {
                         // +75% from spell power
-                        DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.75f;
+                        float koef = 1.0f;
+                        if ( caster->HasAura( 53527 ) )
+                            koef = 1.1f;
+                        if ( caster->HasAura( 53530 ) )
+                            koef = 1.2f;
+
+                        DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellProto)) * 0.75f * koef;
                     }
                     break;
                 default:

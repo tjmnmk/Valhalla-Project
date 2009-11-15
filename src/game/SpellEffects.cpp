@@ -698,6 +698,19 @@ void Spell::EffectDummy(uint32 i)
     if (!unitTarget && !gameObjTarget && !itemTarget)
         return;
 
+    //Divine storm hack
+    if( m_spellInfo->Id == 54171 )
+    {
+        int32 victimCount = m_UniqueTargetInfo.size();
+        int32 damage = m_currentBasePoints[0] / victimCount;
+        for(std::list<TargetInfo>::const_iterator ihit= m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+        {
+            Unit *victim = ObjectAccessor::GetUnit(*m_caster, ihit->targetGUID);
+            m_caster->CastCustomSpell( victim, 54172, &damage, NULL, NULL, true );
+        }
+        return;
+    }
+  
     // selection by spell family
     switch(m_spellInfo->SpellFamilyName)
     {
@@ -1698,7 +1711,7 @@ void Spell::EffectDummy(uint32 i)
                     {
                         SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
 
-                        if (spellInfo->SpellFamilyName == SPELLFAMILY_HUNTER && spellInfo->Id != 23989 && GetSpellRecoveryTime(spellInfo) > 0 )
+                        if (spellInfo->SpellFamilyName == SPELLFAMILY_HUNTER && spellInfo->Id != 23989 && spellInfo->Id != 19574 && GetSpellRecoveryTime(spellInfo) > 0 )
                             ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
                         else
                             ++itr;

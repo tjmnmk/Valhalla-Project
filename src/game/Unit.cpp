@@ -424,6 +424,13 @@ void Unit::DealDamageMods(Unit *pVictim, uint32 &damage, uint32* absorb)
 
 uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDamage, DamageEffectType damagetype, SpellSchoolMask damageSchoolMask, SpellEntry const *spellProto, bool durabilityLoss)
 {
+    //Divine Storm hack
+    if ( spellProto && spellProto->Id == 53385 ) 
+    {
+        int32 healPoint = damage * 25 / 100;
+        this->CastCustomSpell ( this, 54171, &healPoint, NULL, NULL, true );
+    }
+
     // remove affects from victim (including from 0 damage and DoTs)
     if(pVictim != this)
         pVictim->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
@@ -2502,6 +2509,34 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 
     // bonus from skills is 0.04% per skill Diff
     int32 attackerWeaponSkill = int32(GetWeaponSkillValue(attType,pVictim));
+
+    if ( spell->SpellFamilyName == SPELLFAMILY_PALADIN )
+    {
+        // Hammer of Wrath
+        if ( spell->SpellFamilyFlags & UI64LIT(0x0000008000000000) )
+            attackerWeaponSkill = this->GetMaxSkillValueForLevel();
+        // Shield of Righteousness
+        else if ( spell->SpellFamilyFlags & UI64LIT(0x0010000000000000) )
+            attackerWeaponSkill = this->GetMaxSkillValueForLevel();
+        // Avenger's Shield
+        else if ( spell->SpellFamilyFlags & UI64LIT(0x0000000000004000) )
+            attackerWeaponSkill = this->GetMaxSkillValueForLevel();
+        // Judgement ( seal trigger )
+        else if ( spell->Category == SPELLCATEGORY_JUDGEMENT )
+            attackerWeaponSkill = this->GetMaxSkillValueForLevel();
+        // Judgement debuff and damage
+        else if ( GetSpellSpecific( spell->Id ) == SPELL_JUDGEMENT )
+            return SPELL_MISS_NONE;
+        // some Judgement other damage
+        else
+            switch ( spell->Id )
+            {
+                case 20425: // Judgement of Command
+                case 54158: // Judgement
+                    return SPELL_MISS_NONE;
+            }
+    }
+
     int32 skillDiff = attackerWeaponSkill - int32(pVictim->GetMaxSkillValueForLevel(this));
     int32 fullSkillDiff = attackerWeaponSkill - int32(pVictim->GetDefenseSkillValue(this));
 
@@ -4723,6 +4758,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
     Unit* target = pVictim;
     int32 basepoints0 = 0;
 
+
     switch(dummySpell->SpellFamilyName)
     {
         case SPELLFAMILY_GENERIC:
@@ -5747,6 +5783,69 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
         }
         case SPELLFAMILY_PALADIN:
         {
+            // Righteous Vengeance
+            if (dummySpell->SpellIconID == 3025)
+            {
+                // 4 damage tick
+                int32 TickCD = 3000;
+                Aura const* PrevAura = NULL;
+
+                Unit::AuraList const &mPeriodic = target->GetAurasByType( SPELL_AURA_PERIODIC_DAMAGE );
+                for( Unit::AuraList::const_iterator i = mPeriodic.begin(); i != mPeriodic.end(); ++i )
+                {
+                    if ( (*i)->GetCasterGUID() != this->GetGUID() )
+                        continue;
+
+                    if ( (*i)->GetSpellProto()->SpellIconID == 3025 )
+                    {
+                        PrevAura = *i;
+                        break;
+                    }
+                }
+
+                if ( PrevAura )
+                {
+                    int32 PrevTickDmg = SpellDamageBonus(target, PrevAura->GetSpellProto(), PrevAura->GetModifier()->m_amount, DOT);
+                    int32 RemainingTicks = 1 + PrevAura->GetAuraDuration() / TickCD;
+                    basepoints0 = RemainingTicks * PrevTickDmg;
+                }
+
+                basepoints0 = ( basepoints0 +  triggerAmount * damage * 0.01 ) / 4;
+
+                triggered_spell_id = 61840;
+                break;
+            }
+
+            // Sheath of Light
+            if (dummySpell->SpellIconID == 3030)
+            {
+                int32 TickCD = 3000;
+                Aura const* PrevAura = NULL;
+
+                Unit::AuraList const &mPeriodic = target->GetAurasByType( SPELL_AURA_PERIODIC_HEAL );
+                for( Unit::AuraList::const_iterator i = mPeriodic.begin(); i != mPeriodic.end(); ++i )
+                {
+                    if ( (*i)->GetCasterGUID() != this->GetGUID() )
+                        continue;
+
+                    if ( (*i)->GetSpellProto()->SpellIconID == 3030 )
+                    {
+                        PrevAura = *i;
+                        break;
+                    }
+                }
+
+                if ( PrevAura )
+                {
+                    int32 PrevTickDmg = SpellDamageBonus(target, PrevAura->GetSpellProto(), PrevAura->GetModifier()->m_amount, DOT);
+                    int32 RemainingTicks = 1 + PrevAura->GetAuraDuration() / TickCD;
+                    basepoints0 = RemainingTicks * PrevTickDmg;
+                }
+
+                basepoints0 = ( basepoints0 +  triggerAmount * damage * 0.01 ) / 4;
+                triggered_spell_id = 54203;
+                break;
+            }
             // Seal of Righteousness - melee proc dummy (addition ${$MWS*(0.022*$AP+0.044*$SPH)} damage)
             if ((dummySpell->SpellFamilyFlags & UI64LIT(0x000000008000000)) && effIndex==0)
             {
