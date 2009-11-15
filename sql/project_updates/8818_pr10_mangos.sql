@@ -1,6 +1,6 @@
 --Dark Ranger Marrah UK Qgiver
 DELETE FROM creature WHERE id=24137;
-INSERT INTO creature (guid, id, map , spawnMask , phaseMask, modelid, equipment_id,position_x,position_y,position_z,orientation,spawntimesecs,spawndis​t,currentwaypoint,curhealth,curmana,DeathState,MovementType) VALUES
+INSERT INTO creature (guid, id, map , spawnMask , phaseMask, modelid, equipment_id,position_x,position_y,position_z,orientation,spawntimesecs,spawndist,currentwaypoint,curhealth,curmana,DeathState,MovementType) VALUES
 (9168076, 24137, 574, 1, 1, 0, 511, 168.066, -98.1434, 12.5517, 1.88344, 25, 0, 0, 4399, 0, 0, 0);
 
 
