@@ -2982,12 +2982,12 @@ void Spell::finish(bool ok)
 
     // Some hacks to replace wrong DBC data...
     //Missile Barrage
-    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_MAGE && 
-        m_spellInfo->SpellName[0] == "Arcane Missiles" &&
-        m_caster->HasAura(44401))
-    {
-        m_caster->RemoveAura(44401, 0);
-    }
+     if (m_spellInfo->SpellFamilyName == SPELLFAMILY_MAGE && 
+     (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000800)) &&
+      m_caster->HasAura(44401))
+  {
+      m_caster->RemoveAurasDueToSpellByCancel(44401);
+  }
     // For SPELL_AURA_IGNORE_UNIT_STATE charges
     // TODO: find way without this hack
     bool break_for = false;
