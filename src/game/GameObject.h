@@ -678,6 +678,10 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         bool isActiveObject() const { return false; }
         uint64 GetRotation() const { return m_rotation; }
+
+        void SendCustomAnim();
+        void CastSpell(Unit* target, uint32 spellId);
+
     protected:
         uint32      m_spellId;
         time_t      m_respawnTime;                          // (secs) time of next respawn (or despawn if GO have owner()),

@@ -1344,3 +1344,55 @@ void GameObject::UpdateRotationFields(float rotation2 /*=0.0f*/, float rotation3
     SetFloatValue(GAMEOBJECT_PARENTROTATION+2, rotation2);
     SetFloatValue(GAMEOBJECT_PARENTROTATION+3, rotation3);
 }
+
+void GameObject::SendCustomAnim()
+{
+    WorldPacket data(SMSG_GAMEOBJECT_CUSTOM_ANIM,8+4);
+    data << GetGUID();
+    data << (uint32)0;
+    SendMessageToSet(&data, true);
+}
+
+void GameObject::CastSpell(Unit* target, uint32 spellId)
+{
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+    if (!spellInfo)
+        return;
+
+    bool self = false;
+    for (uint8 i = 0; i < 3; ++i)
+    {
+        if(spellInfo->EffectImplicitTargetA[i] == TARGET_FLAG_SELF)
+        {
+            self = true;
+            break;
+        }
+    }
+
+    if(self)
+    {
+        if(target)
+            target->CastSpell(target, spellInfo, true);
+        return;
+    }
+
+    //summon world trigger
+    Creature *trigger = SummonCreature(12999, GetPositionX(), GetPositionY(), GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 50000);
+    if(!trigger) return;
+
+    trigger->SetVisibility(VISIBILITY_OFF); //should this be true?
+    if(Unit *owner = GetOwner())
+    {
+        trigger->setFaction(owner->getFaction());
+        trigger->CastSpell(target, spellInfo, true, 0, 0, owner->GetGUID());
+    }
+    else
+    {
+        trigger->setFaction(14);
+        // Set owner guid for target if no owner avalible - needed by trigger auras
+        // - trigger gets despawned and there's no caster avalible (see AuraEffect::TriggerSpell())
+        trigger->CastSpell(target, spellInfo, true, 0, 0, target ? target->GetGUID() : 0);
+    }
+    //trigger->setDeathState(JUST_DIED);
+    //trigger->RemoveCorpse();
+}

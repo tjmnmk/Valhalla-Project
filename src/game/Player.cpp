@@ -12857,6 +12857,9 @@ void Player::CompleteQuest( uint32 quest_id )
 
         if(Quest const* qInfo = sObjectMgr.GetQuestTemplate(quest_id))
         {
+            if( qInfo->GetCompleteQuest() != 0)
+                CompleteQuest(qInfo->GetCompleteQuest());
+
             if( qInfo->HasFlag(QUEST_FLAGS_AUTO_REWARDED) )
                 RewardQuest(qInfo,0,this,false);
             else

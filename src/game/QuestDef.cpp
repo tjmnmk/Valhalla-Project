@@ -129,6 +129,7 @@ Quest::Quest(Field * questRecord)
 
     QuestStartScript = questRecord[130].GetUInt32();
     QuestCompleteScript = questRecord[131].GetUInt32();
+    CompleteQuest = questRecord[132].GetUInt32();
 
     QuestFlags |= SpecialFlags << 16;
 
