@@ -7021,18 +7021,25 @@ void Spell::EffectPlayMusic(uint32 i)
 
 void Spell::EffectCastButtons(uint32 i)
 {
+    debug_log("check 1");
     if (!unitTarget || m_caster->GetTypeId() != TYPEID_PLAYER)
         return;
 
+    debug_log("check 2");
     Player *p_caster = (Player*)m_caster;
     uint32 button_id = m_spellInfo->EffectMiscValue[i] + 132;
     uint32 n_buttons = m_spellInfo->EffectMiscValueB[i];
+    debug_log("button id %u", button_id);
+    debug_log("n_buttons id %u", n_buttons);
 
     for (; n_buttons; n_buttons--, button_id++)
     {
+        debug_log("check 3");
         uint32 spell_id = p_caster->GetActionButtonSpell(button_id);
+        debug_log("spell id %u", spell_id);
         if (!spell_id)
             continue;
+        debug_log("check 4");
         p_caster->CastSpell(unitTarget, spell_id, true);
     }
 }

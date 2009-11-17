@@ -5830,7 +5830,7 @@ CurrentSpellTypes Spell::GetCurrentContainer()
 bool Spell::CheckTarget( Unit* target, uint32 eff )
 {
     // Check targets for creature type mask and remove not appropriate (skip explicit self target case, maybe need other explicit targets)
-    if(m_spellInfo->EffectImplicitTargetA[eff] != TARGET_SELF )
+    if(m_spellInfo->EffectImplicitTargetA[eff] != TARGET_SELF && m_spellInfo->Id != 66842 && m_spellInfo->Id != 66843 && m_spellInfo->Id != 66844)
     {
         if (!CheckTargetCreatureType(target))
             return false;
