@@ -786,7 +786,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             pVictim->RemoveAurasDueToSpell(pVictim->getTransForm());
 
         if(pVictim->HasAura(51514) && roll_chance_f(75))
-            pVictim->RemoveAura(51514,0);
+            pVictim->RemoveAurasDueToSpell(51514);
 
         if(damagetype == DIRECT_DAMAGE || damagetype == SPELL_DIRECT_DAMAGE)
         {
@@ -4760,13 +4760,20 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
     Unit* target = pVictim;
     int32 basepoints0 = 0;
 
-
     switch(dummySpell->SpellFamilyName)
     {
         case SPELLFAMILY_GENERIC:
         {
             switch (dummySpell->Id)
             {
+                //Explode Corpse
+                case 49555:
+                    triggered_spell_id = 49618;
+                    break;
+                //Explode Corpse heroic
+                case 59807:
+                    triggered_spell_id = 59809;
+                    break;
                 // Eye for an Eye
                 case 9799:
                 case 25988:
@@ -5256,7 +5263,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return true;                        // charge counting (will removed)
                     }
 
-                    CastSpell(this, 11129, true, castItem, triggeredByAura);
+                    CastSpell(this, 28682, true, castItem, triggeredByAura);
                     return (procEx & PROC_EX_CRITICAL_HIT); // charge update only at crit hits, no hidden cooldowns
                 }
                 // Glyph of Ice Block
