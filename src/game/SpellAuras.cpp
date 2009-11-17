@@ -1454,10 +1454,12 @@ void Aura::HandleAddModifier(bool apply, bool Real)
         if(m_target->m_TotemSlot[i])
             if(Creature* totem = m_target->GetMap()->GetCreature(m_target->m_TotemSlot[i]))
                 ReapplyAffectedPassiveAuras(totem);
+
     if(m_spellProto->Id)
     {
-        RemoveAurasDueToSpell(11129);
-        RemoveAurasDueToSpell(28682);
+        Unit* caster = GetCaster();
+        caster->RemoveAurasDueToSpell(11129);
+        caster->RemoveAurasDueToSpell(28682);
     }
 }
 void Aura::HandleAddTargetTrigger(bool apply, bool /*Real*/)
