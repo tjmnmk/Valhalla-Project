@@ -2652,8 +2652,16 @@ void Spell::EffectHeal( uint32 /*i*/ )
 
         int32 addhealth = damage;
 
+        // Seal of Light
+        if ( m_spellInfo->Id == 20167 )
+        {
+            int32 ap = caster->GetTotalAttackPowerValue(BASE_ATTACK);
+            int32 holy = caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellInfo)) +
+                               m_caster->SpellBaseDamageBonusForVictim(GetSpellSchoolMask(m_spellInfo), unitTarget);
+            addhealth += ( ap + holy ) * 15 / 100;  
+        }
         // Vessel of the Naaru (Vial of the Sunwell trinket)
-        if (m_spellInfo->Id == 45064)
+        else if (m_spellInfo->Id == 45064)
         {
             // Amount of heal - depends from stacked Holy Energy
             int damageAmount = 0;
