@@ -203,6 +203,7 @@ REPLACE INTO skill_extra_item_template VALUES
 (66660, 28672, 16, 4), -- transmute: king's amber
 (66663, 28672, 16, 4); -- transmute: majestic zircon
 
-INSERT INTO `skill_extra_item_template` (`SpellId`, `requiredSpecialization`, `additionalCreateChance`, `additionalMaxNum`) VALUES (56001, 26798, 100, 1);
-INSERT INTO `skill_extra_item_template` (`SpellId`, `requiredSpecialization`, `additionalCreateChance`, `additionalMaxNum`) VALUES (56003, 26797, 100, 1);
-INSERT INTO `skill_extra_item_template` (`SpellId`, `requiredSpecialization`, `additionalCreateChance`, `additionalMaxNum`) VALUES (56002, 26801, 100, 1);s
+REPLACE INTO `skill_extra_item_template` (`SpellId`, `requiredSpecialization`, `additionalCreateChance`, `additionalMaxNum`) VALUES 
+(56001, 26798, 100, 1),
+(56003, 26797, 100, 1),
+(56002, 26801, 100, 1);
