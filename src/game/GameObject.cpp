@@ -1377,21 +1377,21 @@ void GameObject::CastSpell(Unit* target, uint32 spellId)
     }
 
     //summon world trigger
-    Creature *trigger = SummonCreature(12999, GetPositionX(), GetPositionY(), GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN, 50000);
+    Creature* trigger = SummonCreature(12999, GetPositionX(), GetPositionY(), GetPositionZ(), 0, TEMPSUMMON_DEAD_DESPAWN, 50000);
     if(!trigger) return;
 
-    trigger->SetVisibility(VISIBILITY_OFF); //should this be true?
+    trigger->SetVisibility(VISIBILITY_ON); //should this be true?
     if(Unit *owner = GetOwner())
     {
         trigger->setFaction(owner->getFaction());
-        trigger->CastSpell(target, spellInfo, true, 0, 0, owner->GetGUID());
+        trigger->CastSpell(trigger, spellInfo, true, 0, 0, owner->GetGUID());
     }
     else
     {
         trigger->setFaction(14);
         // Set owner guid for target if no owner avalible - needed by trigger auras
         // - trigger gets despawned and there's no caster avalible (see AuraEffect::TriggerSpell())
-        trigger->CastSpell(target, spellInfo, true, 0, 0, target ? target->GetGUID() : 0);
+        trigger->CastSpell(trigger, spellInfo, true, 0, 0, target ? target->GetGUID() : 0);
     }
     //trigger->setDeathState(JUST_DIED);
     //trigger->RemoveCorpse();
