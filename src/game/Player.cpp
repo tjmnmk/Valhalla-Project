@@ -3151,12 +3151,12 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool dependen
 bool Player::IsNeedCastPassiveSpellAtLearn(SpellEntry const* spellInfo) const
 {
     //Proffesion bonuses hack
-    if(spellInfo->Id == 53125 || (m_spellInfo->Id > 53661 && m_spellInfo->Id < 53667) ||
-       spellInfo->Id == 53040 || (m_spellInfo->Id > 53125 && m_spellInfo->Id < 53125))
+    if(spellInfo->Id == 53125 || (spellInfo->Id > 53661 && spellInfo->Id < 53667) ||
+       spellInfo->Id == 53040 || (spellInfo->Id > 53125 && spellInfo->Id < 53125))
        return true;
 
     // note: form passives activated with shapeshift spells be implemented by HandleShapeshiftBoosts instead of spell_learn_spell
-   	// talent dependent passives activated at form apply have proper stance data
+    // talent dependent passives activated at form apply have proper stance data
     bool need_cast = (!spellInfo->Stances || (m_form != 0 && (spellInfo->Stances & (1<<(m_form-1)))));
 
     //Check CasterAuraStates
