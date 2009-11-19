@@ -2760,6 +2760,12 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
     //Dispell (hack?)
     if( !( spell->Id == 32375 || spell->Id == 32592 || spell->Id == 39897 ) )
     {
+        //Penance chance
+        if ( spell->Id == 47540 || spell->Id == 53005 || spell->Id == 53006 || spell->Id == 53007 )
+        {
+            if (IsFriendlyTo(pVictim))
+                return SPELL_MISS_NONE;
+        }
         // Check for immune
         if (pVictim->IsImmunedToSpell(spell))
             return SPELL_MISS_IMMUNE;

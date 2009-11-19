@@ -2559,6 +2559,16 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             break;
         }
         case SPELLFAMILY_PALADIN:
+            switch(GetId())
+            {
+                case 20911:                                        // Blessing of Sanctuary
+                case 25899:                                        // Greater Blessing of Sanctuary
+                    if(apply)
+                        m_target->CastSpell(m_target, 67480, true, NULL, this);
+                    else
+                        m_target->RemoveAurasDueToSpell(67480);
+                return;
+            }
             break;
         case SPELLFAMILY_DRUID:
         {
