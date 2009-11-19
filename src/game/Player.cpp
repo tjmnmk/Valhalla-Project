@@ -42,6 +42,7 @@
 #include "CellImpl.h"
 #include "ObjectMgr.h"
 #include "ObjectAccessor.h"
+#include "ObjectDefines.h"
 #include "CreatureAI.h"
 #include "Formulas.h"
 #include "Group.h"
@@ -14715,6 +14716,8 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     // clear charm/summon related fields
     SetCharm(NULL);
     SetPet(NULL);
+    SetTargetGUID(0);
+    SetChannelObjectGUID(0);
     SetCharmerGUID(0);
     SetOwnerGUID(0);
     SetCreatorGUID(0);
