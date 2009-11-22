@@ -3295,8 +3295,8 @@ void ObjectMgr::LoadQuests()
         "IncompleteEmote, CompleteEmote, OfferRewardEmote1, OfferRewardEmote2, OfferRewardEmote3, OfferRewardEmote4,"
     //   126                     127                     128                     129
         "OfferRewardEmoteDelay1, OfferRewardEmoteDelay2, OfferRewardEmoteDelay3, OfferRewardEmoteDelay4,"
-    //   130          131              132
-        "StartScript, CompleteScript, CompleteQuest"
+    //   130          131
+	    "StartScript, CompleteScript"
         " FROM quest_template");
     if(result == NULL)
     {

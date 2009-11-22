@@ -229,7 +229,6 @@ class Quest
         bool   IsAutoComplete() const { return QuestMethod ? false : true; }
         uint32 GetFlags() const { return QuestFlags; }
         bool   IsDaily() const { return QuestFlags & QUEST_FLAGS_DAILY; }
-        uint32 GetCompleteQuest() const { return CompleteQuest; }
 
         // multiple values
         std::string ObjectiveText[QUEST_OBJECTIVES_COUNT];
@@ -319,7 +318,6 @@ class Quest
         uint32 CompleteEmote;
         uint32 QuestStartScript;
         uint32 QuestCompleteScript;
-        uint32 CompleteQuest;
 };
 
 enum QuestUpdateState
