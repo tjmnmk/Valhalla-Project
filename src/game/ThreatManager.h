@@ -33,8 +33,6 @@ class Creature;
 class ThreatManager;
 struct SpellEntry;
 
-#define THREAT_UPDATE_INTERVAL 1 * IN_MILISECONDS    // Server should send threat update to client periodically each second
-
 //==============================================================
 // Class to calculate the real threat based
 
@@ -187,7 +185,6 @@ class MANGOS_DLL_SPEC ThreatManager
         bool isThreatListEmpty() { return iThreatContainer.empty();}
 
         void processThreatEvent(ThreatRefStatusChangeEvent* threatRefStatusChangeEvent);
-        bool isNeedUpdateToClient(uint32 time);
 
         HostileReference* getCurrentVictim() { return iCurrentVictim; }
 
@@ -211,7 +208,6 @@ class MANGOS_DLL_SPEC ThreatManager
     private:
         HostileReference* iCurrentVictim;
         Unit* iOwner;
-		uint32 iUpdateTimer;
         ThreatContainer iThreatContainer;
         ThreatContainer iThreatOfflineContainer;
 };

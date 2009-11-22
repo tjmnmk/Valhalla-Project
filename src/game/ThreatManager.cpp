@@ -221,8 +221,7 @@ void ThreatContainer::clearReferences()
 HostileReference* ThreatContainer::getReferenceByTarget(Unit* pVictim)
 {
     HostileReference* result = NULL;
-    if(!pVictim)
-        return NULL;
+
     uint64 guid = pVictim->GetGUID();
     for(std::list<HostileReference*>::const_iterator i = iThreatList.begin(); i != iThreatList.end(); ++i)
     {
@@ -353,7 +352,7 @@ HostileReference* ThreatContainer::selectNextVictim(Creature* pAttacker, Hostile
 //=================== ThreatManager ==========================
 //============================================================
 
-ThreatManager::ThreatManager(Unit* owner) : iCurrentVictim(NULL), iOwner(owner), iUpdateTimer(THREAT_UPDATE_INTERVAL)
+ThreatManager::ThreatManager(Unit* owner) : iCurrentVictim(NULL), iOwner(owner)
 {
 }
 
@@ -364,7 +363,6 @@ void ThreatManager::clearReferences()
     iThreatContainer.clearReferences();
     iThreatOfflineContainer.clearReferences();
     iCurrentVictim = NULL;
-    iUpdateTimer = THREAT_UPDATE_INTERVAL;
 }
 
 //============================================================
@@ -464,12 +462,7 @@ void ThreatManager::tauntFadeOut(Unit *pTaunter)
 
 void ThreatManager::setCurrentVictim(HostileReference* pHostileReference)
 {
-    if (pHostileReference && pHostileReference != iCurrentVictim)
-    {
-        iOwner->SendChangeCurrentVictimOpcode(pHostileReference);
-    }
      iCurrentVictim = pHostileReference;
-
 }
 
 //============================================================
@@ -514,24 +507,10 @@ void ThreatManager::processThreatEvent(ThreatRefStatusChangeEvent* threatRefStat
                 setCurrentVictim(NULL);
                 setDirty(true);
             }
-            iOwner->SendRemoveFromThreatListOpcode(hostileReference);
             if(hostileReference->isOnline())
                 iThreatContainer.remove(hostileReference);
             else
                 iThreatOfflineContainer.remove(hostileReference);
             break;
     }
-}
-
-bool ThreatManager::isNeedUpdateToClient(uint32 time)
-{
-    if (isThreatListEmpty())
-        return false;
-    if (time >= iUpdateTimer)
-    {
-        iUpdateTimer = THREAT_UPDATE_INTERVAL;
-        return true;
-    }
-    iUpdateTimer -= time;
-    return false;
 }

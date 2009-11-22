@@ -916,7 +916,6 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             }
             break;
         }
-        case GUARDIAN_PET:
         case HUNTER_PET:
         {
             SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, sObjectMgr.GetXPForLevel(petlevel)/4);
@@ -955,7 +954,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             }
             break;
         }
-      /*  case GUARDIAN_PET:
+        case GUARDIAN_PET:
             SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
             SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
 
@@ -968,8 +967,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float(petlevel - (petlevel / 4)));
             //damage range is then petlevel / 2
             SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 4)));
-            this->
-            break; */
+            break; 
         default:
             sLog.outError("Pet have incorrect type (%u) for levelup.", getPetType());
             break;
